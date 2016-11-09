@@ -15,7 +15,7 @@ api_secret = urllib.quote_plus("NoYoe49MQlnyZA7cxcWcb5G3clOrF1ekeqFxPvke1FSygA6P
 # Generate the credentials
 auth = tweepy.AppAuthHandler(api_key, api_secret)
 
-api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+api = tweepy.API(auth, wait_on_rate_limit=True)
 
 limitTweets = True
 
@@ -25,7 +25,8 @@ def getData(screenName):
     print("Pulling data for " + screenName + "...")
     retweets = 0
     original = 0
-    for status in tweepy.Cursor(api.user_timeline,screen_name=screenName,include_rts=True).items(200):
+    sList = tweepy.Cursor(api.user_timeline,screen_name=screenName,include_rts=True).items(200) if limitTweets else tweepy.Cursor(api.user_timeline,screen_name=screenName,include_rts=True).items()
+    for status in sList:
         if status.retweeted or ("RT @" in status.text):
             retweets += 1
         else:
@@ -47,7 +48,7 @@ def TestSimilarity(msg1, msg2):
 def AnalyzeFollowers(screenName):
     bots = 0
     people = 0
-    fList = tweepy.Cursor(api.followers, screen_name=screenName).items(200) if limitTweets else tweepy.Cursor(api.followers, screen_name=screenName).items(200)
+    fList = tweepy.Cursor(api.followers, screen_name=screenName).items(200) if limitTweets else tweepy.Cursor(api.followers, screen_name=screenName).items()
     for friend in fList:
         if not friend.protected:
             print(getData(friend.screen_name))
