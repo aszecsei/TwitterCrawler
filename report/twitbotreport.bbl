@@ -1,3 +1,8 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{bowman:reasoning}
+M.~Bowman, S.~K. Debray, and L.~L. Peterson.
+\newblock Reasoning about naming systems.
+\newblock {\em ACM Trans. Program. Lang. Syst.}, 15(5):795--825, November 1993.
 
 \end{thebibliography}
