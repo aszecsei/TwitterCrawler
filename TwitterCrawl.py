@@ -8,6 +8,11 @@ import csv
 
 import tweepy
 
+import numpy
+from sklearn import datasets, svm
+import matplotlib.pyplot as plt
+import datetime
+
 # API keys
 api_key = urllib.quote_plus("ePEtVRPmUDQFqqQ5X7iJQENdO")
 api_secret = urllib.quote_plus("NoYoe49MQlnyZA7cxcWcb5G3clOrF1ekeqFxPvke1FSygA6PHQ")
@@ -15,9 +20,14 @@ api_secret = urllib.quote_plus("NoYoe49MQlnyZA7cxcWcb5G3clOrF1ekeqFxPvke1FSygA6P
 # Generate the credentials
 auth = tweepy.AppAuthHandler(api_key, api_secret)
 
-api = tweepy.API(auth, wait_on_rate_limit=True)
+api = tweepy.API(auth, wait_on_rate_limit=True, retry_count=3, retry_delay=5, retry_errors=set([401, 404, 500, 503]))
 
 limitTweets = True
+
+epoch = datetime.datetime.utcfromtimestamp(0)
+
+def unix_time_millis(dt):
+    return (dt - epoch).total_seconds() * 1000.0
 
 bots = {}
 
@@ -25,6 +35,7 @@ def getData(screenName):
     print("Pulling data for " + screenName + "...")
     retweets = 0
     original = 0
+    time.sleep(2.5)
     sList = tweepy.Cursor(api.user_timeline,screen_name=screenName,include_rts=True).items(200) if limitTweets else tweepy.Cursor(api.user_timeline,screen_name=screenName,include_rts=True).items()
     for status in sList:
         if status.retweeted or ("RT @" in status.text):
@@ -32,11 +43,7 @@ def getData(screenName):
         else:
             original += 1
     usr = api.get_user(screenName)
-    return [retweets, original, usr.verified, usr.created_at, usr.default_profile, usr.default_profile_image, usr.favourites_count, usr.followers_count, usr.friends_count, usr.listed_count]
-
-def isBot(screenName):
-    return True
-
+    return [retweets, original, usr.verified, unix_time_millis(usr.created_at), usr.default_profile, usr.default_profile_image, usr.favourites_count, usr.followers_count, usr.friends_count, usr.listed_count]
 
 def Similarity(msg1, msg2):
     return difflib.SequenceMatcher(a=seq1.lower(), b=seq2.lower()).ratio()
@@ -45,30 +52,82 @@ def TestSimilarity(msg1, msg2):
     fuzz = 0.9
     return Similarity(msg1, msg2) > fuzz
 
-def AnalyzeFollowers(screenName):
-    bots = 0
-    people = 0
-    fList = tweepy.Cursor(api.followers, screen_name=screenName).items(200) if limitTweets else tweepy.Cursor(api.followers, screen_name=screenName).items()
-    for friend in fList:
-        if not friend.protected:
-            print(getData(friend.screen_name))
-
 def GenerateLearnSet():
     data = []
+    target = []
     with open("bots.txt", 'r') as botFile:
         for line in botFile:
             mData = getData(line)
-            mData.append("True")
+            target.append(True)
             data.append(mData)
     with open("people.txt", 'r') as pplFile:
         for line in pplFile:
             mData = getData(line)
-            mData.append("False")
+            target.append(False)
             data.append(mData)
-    with open("learn.csv", 'w') as csvfile:
-        dataWriter = csv.writer(csvfile)
-        for row in data:
-            dataWriter.writerow(row)
-    print(data)
+    with open("learn.csv", 'w') as learnFile:
+        writer = csv.writer(learnFile)
+        combinedData = list(data)
+        map(lambda (x,y): x.append(y), zip(combinedData, target))
+        for row in combinedData:
+            writer.writerow(row)
+    return (data, target)
 
-GenerateLearnSet()
+# uncomment if generating a learnset
+(d, t) = GenerateLearnSet()
+
+'''
+d = []
+t = []
+with open("learn.csv", 'r') as learnFile:
+    reader = csv.reader(learnFile)
+    for row in reader:
+        # We have to evaluate everything :(
+        md = []
+        md.append(int(row[0]))
+        md.append(int(row[1]))
+        md.append({'True':True}.get(row[2], False))
+        md.append(float(row[3]))
+        md.append({'True':True}.get(row[4], False))
+        md.append({'True':True}.get(row[5], False))
+        md.append(int(row[6]))
+        md.append(int(row[7]))
+        md.append(int(row[8]))
+        md.append(int(row[9]))
+        d.append(numpy.array(md))
+        t.append({'True':1.}.get(row[10], 0.))
+'''
+d = numpy.array(d)
+t = numpy.array(t)
+
+numRows = len(d)
+numCols = len(d[0])
+for r in d:
+    if not len(r) == numCols:
+        raise ValueError("Error! Array is jagged.")
+if not numRows == len(t):
+    raise ValueError("Error! Dataset doesn't have the same size as target set.")
+
+clf = svm.SVC(gamma=0.001, C=100.)
+clf.fit(numpy.array(d), numpy.array(t))
+
+def Classify(screenName):
+    dd = getData(screenName)
+    if not len(dd) == numCols:
+        raise ValueError("Error! Classification dataset doesn't have the same size as learning dataset!")
+    return clf.predict(numpy.array([dd]))[0]
+
+def AnalyzeFollowers(screenName):
+    with open("classified.csv", 'w') as classifyFile:
+        cfwriter = csv.writer(classifyFile)
+        fList = tweepy.Cursor(api.followers, screen_name=screenName).items(200) if limitTweets else tweepy.Cursor(api.followers, screen_name=screenName).items()
+        for friend in fList:
+            if not friend.protected:
+                isBot = Classify(friend.screen_name)
+                print(friend.screen_name + " | " + str(isBot))
+                cfwriter.writerow([friend.screen_name, isBot])
+
+# print(str(Classify("OralieAuPair")))
+AnalyzeFollowers("uflaz11")
+# AnalyzeFollowers("Djawadi_Ramin")
+#AnalyzeFollowers("NancyBadillo13")
