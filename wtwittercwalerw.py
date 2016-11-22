@@ -139,7 +139,7 @@ def getats(text):
             ats=ats+text[ind:found.end()+ind]
         ind=text.find("@",ind+1)
     return ats
-def regrabtweets(ulist):
+def regrabtweets(ulist):#delete tweets in DB first
     for user in ulist:
         getData(user)
 def getData(screenName):
@@ -188,7 +188,7 @@ def getData(screenName):
                             pass
                         print("woops ",e)
                         bb+=1
-                        time.sleep(12)
+                        time.sleep(1)
                     time.sleep(.15)
             b=10
         except Exception as e:
@@ -245,8 +245,8 @@ def grabtweetstuff(usr):
     return (usr.screen_name,stuff[0],stuff[1], usr.verified, usr.created_at, usr.default_profile, usr.default_profile_image, usr.favourites_count, usr.followers_count, usr.friends_count, usr.listed_count)
 def getdatafrom(depth,ulist):
     data=[]
-    print(depth)
     for user in ulist:
+        print(depth)
         bb=0
         while bb<10:
             try:
@@ -265,13 +265,19 @@ def getdatafrom(depth,ulist):
                     pass
                 print("woops ",e)
                 bb+=1
-                time.sleep(12)
+                time.sleep(1)
         if data==[]:
-            try:
-                data=grabtweetstuff(user)
-            except Exception as e:
-                print("oops "+str(user.screen_name)) 
+            bb=0
+            while bb<5:
+                try:
+                    data=grabtweetstuff(user)
+                except Exception as e:
+                    print("oops "+str(user.screen_name)+"  "+str(e))
+                    time.sleep(.5)
+                    bb+=1
+            if bb==5:
                 continue
+                        
             bb=0
             while bb<5:
                 try:
@@ -289,7 +295,7 @@ def getdatafrom(depth,ulist):
                         pass
                     print("woops ",e)
                     bb+=1
-                    time.sleep(12)
+                    time.sleep(1)
             if depth>0:
                 nl=[]
                 sList = tweepy.Cursor(api.followers, screen_name=user.screen_name).items(5)
@@ -316,7 +322,7 @@ def getdatafrom(depth,ulist):
                                         pass
                                     print("woops ",e)
                                     bb+=1
-                                    time.sleep(12)
+                                    time.sleep(1)
                                 time.sleep(.15)
                         b=10
                     except Exception as e:
