@@ -121,17 +121,33 @@ def nodegraph(sqlfile,name):
             stars[str(tup[0])].append(str(tup[1]))
         except:
             stars.update({str(tup[0]):[str(tup[0]),str(tup[1])]})
+    #xx=0
+    #nstars=[]
     for i in stars:
         if len(stars[i])>1:
             g.add_star(stars[i])
+            #nstars.append((stars[i],len(stars[i])))
+            #xx+=1
+            #if xx>100:
+                #break
+    gs=list(nx.connected_component_subgraphs(g))
+    xxxx=0
+    for lis in gs:
+        print(str(xxxx)+":"+str(lis.edges()))
+        xxxx=+1
+    print(len(gs))
     #mark=[]
     color=[]
     ecolor=[]
-    for n in g.nodes():
-        print(n)
+    #p={}
+    xx=0.0
+    for n in gs[0].nodes():
+        #print(n)
         #mark.append(m[n])
         color.append(c[n])
-    for e in g.edges():
+        #p.update({n:(xx,0)})
+        xx+=0.1
+    for e in gs[0].edges():
         if ib[e[0]]==1 and ib[e[1]]==1:
             ecolor.append((0,0,1))
         elif ib[e[0]]==1 or ib[e[1]]==1:
@@ -139,10 +155,147 @@ def nodegraph(sqlfile,name):
         else:
             ecolor.append((1,0,0))
     print(color)
+    p=generatep(sqlfile,gs[0].edges())
     #print(mark)
-    nx.draw(g,node_size=10,with_labels=False,node_color=color,edge_color=ecolor)
-    #return stars
+    print len(gs[0].nodes())
+    nx.draw(gs[0],pos=p,node_size=50,with_labels=False,node_color=color,edge_color=ecolor)
+    plt.savefig(name+".pdf")
+def maxi(lists):
+    max=0
+    ind=1
+    for list in lists[1:]:
+        if len(list)>len(lists[max]):
+            max=ind
+        ind+=1
+    return max
+def sortlist(lists):
+    nlists=[]
+    for list in lists:
+        nlists.append(list)
+    lists=[]
+    while len(nlists)>0:
+        ind=maxi(nlists)
+        list=nlists.pop(ind)
+        lists.append(list)
+    return lists
+
+def generatep(sqlfile,edglist):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    cur.execute("select followee_twid,follower_twid from Followers;")
+    el=cur.fetchall()
+    stars={}
+    for tup in el:
+        if ((str(tup[0]),str(tup[1])) in edglist) or ((str(tup[1]),str(tup[0])) in edglist):
+            try:
+                stars[str(tup[0])].append(str(tup[1]))
+            except:
+                stars.update({str(tup[0]):[str(tup[0]),str(tup[1])]})  
+    nstars=[]
+    for star in stars:
+        nstars.append(stars[star])
+    stars=sortlist(nstars)
+    for star in stars:
+        print(star)
+        #print len(star)
+    p={}
+    clockhand={}
+    maxx=0
+    maxy=0
+    minx=0
+    miny=0
+    maxxt=0
+    maxyt=0
+    minxt=0
+    minyt=0
+    cnt=0
+    for star in stars:
+        if cnt%4==0:
+            if maxxt>maxx:
+                maxx=maxxt+10
+            if maxyt>maxy:
+                maxy=maxyt+10
+            if minxt<minx:
+                minx=minxt-10
+            if minyt<miny:
+                miny=minyt-10
+            maxxt=0
+            maxyt=0
+            minxt=0
+            minyt=0
+        if star[0] in p:
+            #p[star[0]]=(2*p[star[0]][0],2*p[star[0]][1])
+            pass
+        else:
+            if cnt%4==0:
+                r=0
+                if maxx>=maxy:
+                    r=maxx
+                else:
+                    r=maxy
+                p.update({star[0]:calcP(0,r)})
+            elif cnt%4==1:
+                r=0
+                if (-minx)>=maxy:
+                    r=-minx
+                else:
+                    r=maxy
+                p.update({star[0]:calcP(1,r)})
+            elif cnt%4==2:
+                r=0
+                if minx<=miny:
+                    r=-minx
+                else:
+                    r=-miny
+                p.update({star[0]:calcP(2,r)})
+            elif cnt%4==3:
+                r=0
+                if maxx>=(-miny):
+                    r=maxx
+                else:
+                    r=-miny
+                p.update({star[0]:calcP(3,r)})
+            cnt+=1
+            
+        l=len(star[1:])        
+        c=0
+        non=[]
+        ratios={}
+        for n in star[1:]:
+            if n not in p:
+                xxx=calculatep(p[star[0]],c,l)
+                if xxx[0]>maxx:
+                    maxx=xxx[0]
+                if xxx[1]>maxy:
+                    maxy=xxx[1]
+                if xxx[0]<minx:
+                    minx=xxx[0]
+                if xxx[1]<miny:
+                    miny=xxx[1]
+                p.update({n:(xxx[0],xxx[1])})
+                clockhand.update({n:(xxx[2],xxx[3])})
+                ratios.update({n:float(xxx[2])/float(xxx[3])})
+                non.append(n)
+            c+=1
+    print(p)
+    return p
+def calcP(q,r):
+    theta=random.random()*np.pi/2+q*np.pi/2
+    x=r*np.sin(theta)
+    y=r*np.cos(theta)
+    return (x,y)
+def calculatep(center,cur,tot):
+    PI=np.pi
+    sin=np.sin
+    cos=np.cos
+    ratio=float(cur)/float(tot)
+    theta=PI*2*ratio
+    x=10*sin(theta)
+    y=10*cos(theta)
+    return (x+center[0],y+center[1],cur,tot)
 #nodegraph("udataf3.sqlite","te")
+    #return stars
+nodegraph("udataf3.sqlite","te")
 #this makes a bar graph of 100 accounts (either the top 100 highest botornotscore, mode=0, or the 100 lowest botornot score, mode=1, or 100 at random. bars are colored red for accounts classified as bots, and blue if not.
 def bargraphbotvscore(sqlfile,name,mode=0):
     conn=sqlite3.connect(sqlfile)
