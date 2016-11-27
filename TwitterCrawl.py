@@ -115,7 +115,7 @@ for r in d:
 if not numRows == len(t):
     raise ValueError("Error! Dataset doesn't have the same size as target set.")
 
-clf = svm.SVC(gamma=0.001, C=100.)
+clf = svm.SVC()
 clf.fit(numpy.array(d), numpy.array(t))
 
 def Classify(screenName):
@@ -151,8 +151,8 @@ def AnalyzeSQLTable(sqlfile):
         # This isn't working for some reason - using Classify instead
         # data = [row[1], row[2], (row[3] == 1), unix_time_millis(datetime.datetime.strptime(row[4], '%Y-%m-%d %H:%M:%S')), (row[5] == 1), (row[6] == 1), row[7], row[8], row[9], row[10]]
         # isBot = clf.predict(numpy.array([data]))[0]
-        isBot = Classify(row[0])
         try:
+            isBot = Classify(row[0])
             print "insert into ourclassify values(" + row[0] + "," + str(int(round(isBot))) + ")"
             curse2.execute("insert into ourclassify values(?,?);",(row[0],int(round(isBot))))
             conn.commit()
