@@ -11,7 +11,8 @@ import tweepy
 import numpy
 from sklearn import datasets, svm
 import matplotlib.pyplot as plt
-import datetime
+
+import sqlite3
 
 # API keys
 api_key = urllib.quote_plus("ePEtVRPmUDQFqqQ5X7iJQENdO")
@@ -20,7 +21,7 @@ api_secret = urllib.quote_plus("NoYoe49MQlnyZA7cxcWcb5G3clOrF1ekeqFxPvke1FSygA6P
 # Generate the credentials
 auth = tweepy.AppAuthHandler(api_key, api_secret)
 
-api = tweepy.API(auth, wait_on_rate_limit=True, retry_count=3, retry_delay=5, retry_errors=set([401, 404, 500, 503]))
+api = tweepy.API(auth, wait_on_rate_limit=True, retry_count=5, retry_delay=10, retry_errors=set([401, 404, 500, 503]))
 
 limitTweets = True
 
@@ -32,10 +33,10 @@ def unix_time_millis(dt):
 bots = {}
 
 def getData(screenName):
-    print("Pulling data for " + screenName + "...")
+    print "Pulling data for " + screenName + "..."
     retweets = 0
     original = 0
-    time.sleep(2.5)
+    time.sleep(0.25)
     sList = tweepy.Cursor(api.user_timeline,screen_name=screenName,include_rts=True).items(200) if limitTweets else tweepy.Cursor(api.user_timeline,screen_name=screenName,include_rts=True).items()
     for status in sList:
         if status.retweeted or ("RT @" in status.text):
@@ -53,18 +54,25 @@ def TestSimilarity(msg1, msg2):
     return Similarity(msg1, msg2) > fuzz
 
 def GenerateLearnSet():
+    print "Generating learning set..."
     data = []
     target = []
     with open("bots.txt", 'r') as botFile:
         for line in botFile:
-            mData = getData(line)
-            target.append(True)
-            data.append(mData)
+            try:
+                mData = getData(line)
+                target.append(True)
+                data.append(mData)
+            except:
+                pass
     with open("people.txt", 'r') as pplFile:
         for line in pplFile:
-            mData = getData(line)
-            target.append(False)
-            data.append(mData)
+            try:
+                mData = getData(line)
+                target.append(False)
+                data.append(mData)
+            except:
+                pass
     with open("learn.csv", 'w') as learnFile:
         writer = csv.writer(learnFile)
         combinedData = list(data)
@@ -74,9 +82,8 @@ def GenerateLearnSet():
     return (data, target)
 
 # uncomment if generating a learnset
-(d, t) = GenerateLearnSet()
+# (d, t) = GenerateLearnSet()
 
-'''
 d = []
 t = []
 with open("learn.csv", 'r') as learnFile:
@@ -96,7 +103,7 @@ with open("learn.csv", 'r') as learnFile:
         md.append(int(row[9]))
         d.append(numpy.array(md))
         t.append({'True':1.}.get(row[10], 0.))
-'''
+
 d = numpy.array(d)
 t = numpy.array(t)
 
@@ -127,7 +134,33 @@ def AnalyzeFollowers(screenName):
                 print(friend.screen_name + " | " + str(isBot))
                 cfwriter.writerow([friend.screen_name, isBot])
 
-# print(str(Classify("OralieAuPair")))
-AnalyzeFollowers("uflaz11")
+def AnalyzeSQLTable(sqlfile):
+    print "Opening SQL database..."
+    conn=sqlite3.connect(sqlfile)
+    curse=conn.cursor()
+    try:
+        curse.execute("create table ourclassify(sname varchar(50) primary key, isbot integer);")
+        conn.commit()
+        print "Created ourclassify table..."
+    except:
+        pass
+    curse.execute("select * from udata")
+    for row in curse:
+        print "Analyzing @" + row[0] + "..."
+        curse2 = conn.cursor()
+        # This isn't working for some reason - using Classify instead
+        # data = [row[1], row[2], (row[3] == 1), unix_time_millis(datetime.datetime.strptime(row[4], '%Y-%m-%d %H:%M:%S')), (row[5] == 1), (row[6] == 1), row[7], row[8], row[9], row[10]]
+        # isBot = clf.predict(numpy.array([data]))[0]
+        isBot = Classify(row[0])
+        try:
+            print "insert into ourclassify values(" + row[0] + "," + str(int(round(isBot))) + ")"
+            curse2.execute("insert into ourclassify values(?,?);",(row[0],int(round(isBot))))
+            conn.commit()
+        except Exception as err:
+            print "Error inserting data for " + row[0] + " | " + str(err)
+    conn.close()
+
+# AnalyzeFollowers("uflaz11")
 # AnalyzeFollowers("Djawadi_Ramin")
 #AnalyzeFollowers("NancyBadillo13")
+AnalyzeSQLTable("udataf3.sqlite")
