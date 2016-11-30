@@ -9,7 +9,7 @@ import csv
 import tweepy
 
 import numpy
-from sklearn import datasets, svm
+from sklearn import datasets, svm, cluster
 import matplotlib.pyplot as plt
 
 import sqlite3
@@ -77,9 +77,10 @@ def GenerateLearnSet():
             writer.writerow(row)
     return data
 
+'''
 # uncomment if generating a learnset
 d = GenerateLearnSet()
-'''
+
 d = []
 t = []
 with open("learn.csv", 'r') as learnFile:
@@ -99,7 +100,7 @@ with open("learn.csv", 'r') as learnFile:
         md.append(int(row[9]))
         d.append(numpy.array(md))
         t.append({'True':1.}.get(row[10], 0.))
-'''
+
 dd = numpy.array(d)[:,:-1]
 dt = numpy.array(d)[:,-1:]
 
@@ -113,6 +114,41 @@ if not numRows == len(dt):
 
 clf = svm.SVC()
 clf.fit(numpy.array(dd), numpy.array(dt))
+'''
+
+def Cluster(sqlfile):
+    # Open SQL file
+    print "Opening SQL database..."
+    conn=sqlite3.connect(sqlfile)
+    curs=conn.cursor()
+    # Create our clustering table if we don't already have one
+    try:
+        curs.execute("create table ourcluster(sname varchar(50) primary key, cluster integer);")
+        conn.commit()
+        print "Created ourcluster table..."
+    except:
+        pass
+    # Grab data for each user
+    dset = []
+    snameset = []
+    curs.execute("select udata.sname, rt, orig, verif, def, defi, fac, foc, frc, lic, score from udata, botornotscore on udata.sname=botornotscore.sname where score notnull")
+    for row in curs:
+        #       rt
+        mRow = list(row[1:])
+        # mRow[3] = unix_time_millis(datetime.datetime.strptime(mRow[3], '%Y-%m-%d %H:%M:%S'))
+        dset.append(mRow)
+        snameset.append(row[0])
+    k_means = cluster.KMeans(n_clusters=50)
+    k_means.fit(numpy.array(dset))
+    # put cluster into table
+    for i in range(0, len(snameset)):
+        print "insert into ourcluster values(" + snameset[i] + "," + str(k_means.labels_[i]) + ")"
+        try:
+            curs.execute("insert into ourcluster values(?,?);",(snameset[i],str(k_means.labels_[i])))
+        except:
+            pass
+    conn.commit()
+    conn.close()
 
 def Classify(screenName):
     dd = getData(screenName)
@@ -132,6 +168,19 @@ def AnalyzeFollowers(screenName):
 
 def AnalyzeMentions(screenName, forceLinks=False):
     tList = tweepy.Cursor(api.search, q=("@" + screenName + (" filter:links" if forceLinks else ""))).items(200)
+    numBots = 0
+    numPpl = 0
+    for tweet in tList:
+        isBot = Classify(tweet.user.screen_name)
+        print tweet.user.screen_name + (": BOT" if int(round(isBot)) == 1 else ": PERSON")
+        if int(round(isBot)) == 1:
+            numBots += 1
+        else:
+            numPpl += 1
+    print "BOTS: " + str(numBots) + " | PPL: " + str(numPpl)
+
+def AnalyzeHashtags(htag, forceLinks=False):
+    tList = tweepy.Cursor(api.search, q=("#" + htag + (" filter:links" if forceLinks else ""))).items(200)
     numBots = 0
     numPpl = 0
     for tweet in tList:
@@ -188,4 +237,6 @@ def AnalyzeSQLTable(sqlfile):
 # AnalyzeFollowers("Djawadi_Ramin")
 # AnalyzeFollowers("NancyBadillo13")
 # AnalyzeSQLTable("udataf.sqlite")
-AnalyzeMentions("NathanFillion")
+# AnalyzeMentions("NathanFillion")
+# AnalyzeHashtags("brexit")
+Cluster("udataf.sqlite")
