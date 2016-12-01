@@ -1,10 +1,10 @@
-SELECT t1.cluster, CAST(t1.NumURLs AS FLOAT) / CAST(t2.NumUsers AS FLOAT) AS LinksPerUser
+SELECT t1.cluster, CAST(t1.NumRTs AS FLOAT) / CAST(t2.NumUsers AS FLOAT) AS RTsPerUser
 FROM (SELECT
 	ourclusterscoresubscore.cluster,
-	COUNT(*) AS NumURLs
+	COUNT(*) AS NumRTs
 	FROM ourclusterscoresubscore,Tweets
 	ON ourclusterscoresubscore.sname=Tweets.sname
-	WHERE Tweets.urls not null and not Tweets.urls=""
+	WHERE Tweets.retweet not null and not Tweets.retweet=0
 	GROUP BY ourclusterscoresubscore.cluster) AS t1,
 	(SELECT
 	ourclusterscoresubscore.cluster,
