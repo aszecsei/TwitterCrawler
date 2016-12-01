@@ -1,0 +1,1 @@
+SELECT ourclusterscoresubscore.cluster, AVG(botornotscore.score), MIN(botornotscore.score), MAX(botornotscore.score), COUNT(botornotscore.sname) FROM botornotscore, ourclusterscoresubscore ON botornotscore.sname=ourclusterscoresubscore.sname GROUP BY ourclusterscoresubscore.cluster ORDER BY AVG(botornotscore.score);

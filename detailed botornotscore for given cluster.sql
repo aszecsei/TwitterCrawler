@@ -1,0 +1,1 @@
+SELECT * FROM ourclusterscoresubscore,botornotscore on ourclusterscoresubscore.sname=botornotscore.sname WHERE ourclusterscoresubscore.cluster=19 order by score

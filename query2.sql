@@ -1,1 +1,0 @@
-SELECT * FROM ourcluster WHERE ourcluster.cluster=18

@@ -1,0 +1,1 @@
+select ourclusterscoresubscore.cluster, COUNT(Tweets.urls) from ourclusterscoresubscore,Tweets on ourclusterscoresubscore.sname=Tweets.sname where urls not null and not urls="" group by ourclusterscoresubscore.cluster order by ourclusterscoresubscore.cluster
