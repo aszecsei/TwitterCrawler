@@ -122,10 +122,7 @@ Willem DeJong\\
 \maketitle
 \begin{abstract}
 % ABSTRACT (up to 200 words)
-Twitter bots are often cited as affecting the political process by manipulating
-the trending topics data; similar behavior is also cited on platforms like Facebook.
-We attempt to classify users as bots based on statistical analysis of their accounts,
-and then examine the ways in which they interact with other users.
+Twitter bots are often cited as affecting the political process by manipulating the trending topics data; similar behavior is also cited on other social platforms, such as Facebook. We present our use of unsupervised machine learning, combined with Indiana University's \emph{BotOrNot} service, to classify Twitter users as bots based on statistical analysis of their accounts, and then examine the ways in which they interact with other users.
 \end{abstract}
 
 % We no longer use \terms command
@@ -133,23 +130,26 @@ and then examine the ways in which they interact with other users.
 
 \section{Introduction}
 % 1. INTRODUCTION (1 page)
-Introduction
 
 \subsection{Background \& Motivation}
 % 1.1 Background & Motivation (1-2 paragraphs)
-Lorem ipsum
+\emph{Social bots}, also known as \emph{sybil accounts}, are programs that automate interaction on social platforms. While some may simply be humorous or helpful accounts that don't attempt to hide their status as bots, others have more manipulative goals; they may flood a social network with spam, or attempt to more subtly influence the thoughts and behavior of the humans it interacts with.
+
+TODO: Talk about nefarious bots in history, and attempts to diminish their influence
 
 \subsection{Problem Statement}
 % 1.2 Problem Statement (1 paragraph)
-Lorem ipsum
+While bot-detection remains a problem, we wanted to determine how these bot accounts preferred to interact with human users.
 
 \subsection{Proposed Approach}
 % 1.3 Proposed Approach (1 paragraph)
-Lorem ipsum
+In this paper, we use data from a bot-detection service run by Indiana University to determine whether or not users are bots. We then pull their latest tweets, as well as user data, and use the collected data in an unsupervised machine learning algorithm to cluster the users into 50 groups.
+
+We then take the data for each cluster and analyze common behavioral patterns.
 
 \subsection{Key Results}
 % 1.4 Key Results (1-2 paragraph)
-Lorem ipsum
+We found a general inverse trend between the \emph{BotOrNot} score for a cluster and the number of retweets made by the cluster. In addition, a similar inverse trend exists for the number of links tweeted by users.
 
 \section{Related Work}
 % RELATED WORK (1/2 page)
