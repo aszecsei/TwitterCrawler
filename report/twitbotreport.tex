@@ -122,7 +122,7 @@ Willem DeJong\\
 \maketitle
 \begin{abstract}
 % ABSTRACT (up to 200 words)
-Twitter bots are often cited as affecting the political process by manipulating the trending topics data; similar behavior is also cited on other social platforms, such as Facebook. We present our use of unsupervised machine learning, combined with Indiana University's \emph{BotOrNot} service, to classify Twitter users as bots based on statistical analysis of their accounts, and then examine the ways in which they interact with other users. Determining how these bot accounts
+Twitter bots are often cited as affecting the political process by manipulating the trending topics data; similar behavior is also cited on other social platforms, such as Facebook. We present our use of unsupervised machine learning, combined with Indiana University's \emph{BotOrNot} service, to classify Twitter users as bots based on statistical analysis of their accounts, and then examine the ways in which they interact with other users. Determining how these bots interact with human users can help to focus bot-detection algorithms to target those bots that interact with human users in malicious ways.
 \end{abstract}
 
 % We no longer use \terms command
@@ -139,15 +139,11 @@ Aral and Walker (2011) showed that social networks are highly effective at manip
 
 \subsection{Problem Statement}
 % 1.2 Problem Statement (1 paragraph)
-While there have been multiple approaches to bot detection\cite{Davis:BotOrNot}\cite{Stringhini:DetectSpam}\cite{Xiao:ClusterFakeAccounts}, these have been restrained to simple detection. Very few have attempted to examine the ways that these fake accounts interact with real users. Our goal is to find a number of bot accounts and determine how they use social media to affect their target users.
+While there have been multiple approaches to bot detection\cite{Davis:BotOrNot}\cite{Stringhini:DetectSpam}\cite{Xiao:ClusterFakeAccounts}, these have been restrained to simple detection. Very few have attempted to examine the ways that these fake accounts interact with real users. Our goal is to find a number of bot accounts and determine how they use social media to affect their target users. Determining which bots are attempting to manipulate social networks and which are providing services to human users is an import aspect of bot detection, and one we believe can be improved by examining how malicious bots interact with human users.
 
 \subsection{Proposed Approach}
 % 1.3 Proposed Approach (1 paragraph)
-In this paper, we use data from a bot-detection service run by Indiana University to determine whether or not users are bots. We then pull their latest tweets, as well as user data, and use the collected data in an unsupervised machine learning algorithm to cluster the users into 50 groups.
-
-As described by Bessi and Ferrera\cite{Bessi:PresElect}, we retrieve the most important descriptors of bots: whether they're using the default appearance, their retweet-to-tweet ratio, and others, in addition to the \emph{BotOrNot} score.
-
-We then take the data for each cluster and analyze common behavioral patterns.
+In this paper, we use data from a bot-detection service run by Indiana University to determine whether or not users are bots. We then pull their latest tweets, as well as user data, and use the collected data in an unsupervised machine learning algorithm to cluster the users into 50 groups. We then take the data for each cluster and analyze common behavioral patterns.
 
 \subsection{Key Results}
 % 1.4 Key Results (1-2 paragraph)
@@ -159,7 +155,11 @@ Lorem ipsum
 
 \section{Proposed Approach}
 % PROPOSED APPROACH (1 page)
-After discovering a number of inconsistencies 
+To retrieve a list of human and bot Twitter accounts, we compiled a list of 113 users with an approximately even split between humans and bots. We then retrieved data for their followers, and their followers' followers, leaving us with 9,025 Twitter users, which we then classified.
+
+After discovering a number of inconsistencies with the overall BotOrNot score, we determined that more information was required for automated analysis of Twitter accounts. Using unsupervised machine learning to cluster accounts let us successfully organize a large number of accounts into separate categories, which we manually classified and verified. As described by Bessi and Ferrera\cite{Bessi:PresElect}, we retrieved the most important descriptors of bots: whether they're using the default appearance, their retweet-to-tweet ratio, and others, in addition to the \emph{BotOrNot} score and category scores. However, our best results were found when simply clustering based on the \emph{BotOrNot} category scores.
+
+
 
 \section{Results \& Discussion}
 % RESULTS & DISCUSSIONS (3 pages including tables and figures)
@@ -170,7 +170,7 @@ Lorem ipsum
 Lorem ipsum
 
 \subsection{Further Work}
-[TODO: Talk about how we didn't get the expanded links from the tweets and how analysis might benefit, since media are naively represented as URLs in the raw tweet data]
+Although we were able to manually identify advertising links, when we retrieved data on individual Tweets we did not expand Twitter's shortened URL format. This made media, such as photos, appear identical to other links, since Twitter represents media as URLs. In addition, the sample size for manual classification was small by necessity; setting up a web service such as Mechanical Turk to crowdsource this account classification would improve analysis and clustering.
 
 %
 % The following two commands are all you need in the
@@ -188,6 +188,12 @@ Lorem ipsum
 %APPENDICES are optional
 %\balancecolumns
 % \appendix
+
+\appendix
+\section{Contributions}
+Alic Szecsei provided data retrieval methods for Twitter accounts, programmed the machine learning clustering, and wrote the data analysis.
+
+Willem DeJong programmed BotOrNot score retrieval methods, retrieved data for Twitter accounts to store in SQL databases, and created many of the graphs and charts.
 
 %\balancecolumns % GM June 2007
 % That's all folks!
