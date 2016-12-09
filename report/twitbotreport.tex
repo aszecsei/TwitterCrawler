@@ -165,20 +165,46 @@ Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ip
 
 \section{Proposed Approach}
 % PROPOSED APPROACH (1 page)
-To retrieve a list of human and bot Twitter accounts, we compiled a list of 113 users with an approximately even split between humans and bots. We then retrieved data for their followers, and their followers' followers, leaving us with 9,025 Twitter users, which we then classified.
+Many examinations of bot behavior on Twitter uses ground truths created by verified accounts. However, the social behavior of verified Twitter accounts is wildly different from that of the general public. Verified users often have a celebrity status, and so are less likely to retweet other users, and usually will not have a small number of followers.
 
-After discovering a number of inconsistencies with the overall BotOrNot score, we determined that more information was required for automated analysis of Twitter accounts. Using unsupervised machine learning to cluster accounts let us successfully organize a large number of accounts into separate categories, which we manually classified and verified. As described by Bessi and Ferrera\cite{Bessi:PresElect}, we retrieved the most important descriptors of bots: whether they're using the default appearance, their retweet-to-tweet ratio, and others, in addition to the \emph{BotOrNot} score and category scores. However, our best results were found when simply clustering based on the \emph{BotOrNot} category scores.
+In addition, verified Twitter accounts occasionally belong to people who exhibit bot-like behavior, advertising their services without much variety between tweets, and consistently linking to their personal websites. While these users may be verified, they are not guaranteed to be run by real people, and are often linked to other services to simply tweet links.
 
-To classify each cluster, we set up a basic Python script using Selenium that displayed a sample set of Twitter feeds, and allowed a user to submit a category for the user[TODO: What categories?]. Based on the categories reported for the cluster, we could determine what type of Twitter account a user was likely to be. We then examined the average \emph{BotOrNot} scores for these categories.
+Instead, we chose to start with Twitter accounts we knew or who followed our personal accounts, and then attempt to provide a more detailed classification system to account for these "`verified bots."'
 
+To retrieve a list of human and bot Twitter accounts, we compiled an initial list of 113 users with an approximately even split between humans and bots. We then retrieved data for their followers, and their followers' followers, leaving us with 9,025 Twitter users, which we then classified.
 
+\subsection{Clustering}
+
+\emph{BotOrNot} analyzes a large amount of data retrieved from each user, including sentiment analysis and a temporal analysis to determine when users are likely to tweet. Using machine learning classifiers, it assigns a score to a user, with higher scores indicating a larger amount of bot-like behavior.
+
+Testing \emph{BotOrNot} lead us to discover a number of inconsistencies with the overall score. A Twitter bot owned by one of the authors was given a lower score than the personal account that the bot was attempting to imitate. Organizational accounts were often given a high \emph{BotOrNot} score, which the official website discloses. One account was owned by the son of another user, who had only made 3 tweets and had a \emph{BotOrNot} score of over 90%.
+
+After discovering these issues, we determined that more information was required for automated analysis of Twitter accounts. Using unsupervised machine learning to cluster accounts let us successfully organize a large number of accounts into separate categories, which we manually classified and verified. As described by Bessi and Ferrera\cite{Bessi:PresElect}, we retrieved the most important descriptors of bots: whether they're using the default appearance, their retweet-to-tweet ratio, and others, in addition to the \emph{BotOrNot} score and category scores. However, our best results were found when simply clustering based on the \emph{BotOrNot} category scores.
+
+To classify each cluster, we set up a basic Python script using Selenium that displayed a sample set of Twitter feeds, and allowed a user to submit a category for the user. Based on the categories reported for the cluster, we could determine what type of Twitter account a user was likely to be. We then manually categorized approximately [TODO: Number] 750 of these accounts, split evenly among each cluster.
+
+\subsection{Tweet Analysis}
+
+We determined how bots could engage with human users on the Twitter platform, determining that these vectors consisted of:
+\begin{itemize}
+	\item Mentioning a user in a tweet
+	\item Retweeting a user
+	\item Using a popular hashtag or phrase
+	\item Following a user
+	\item Favoriting another user's tweet
+\end{itemize}
+We collected data about how many accounts each account was following, how many accounts followed them, and how many tweets each account had favorited. This user data let us analyze how many accounts each cluster was following, and helped manually classify certain users as bots.
+
+In addition to retrieving this user data, the latest tweets made by each account, with a total of over 1 million tweets. We could then determine whether the tweet had been retweeted from another user, contained links, mentioned other users, and which hashtags were used.
+
+Using these social behaviors, we were able to determine how each cluster and category of user tended to interact with other users. Focusing bot detection on these interactions could result in improved efficiency for spam removal services or other bot-related studies.
 
 \section{Results \& Discussion}
 % RESULTS & DISCUSSIONS (3 pages including tables and figures)
 
 \section{Conclusion}
 % CONCLUSION (~1/4 pages)
-While some spambots use hashtags to make their tweets more visible, the vast majority of bots don't directly interact with human users. Instead, they're more likely to simply follow a large number of users, and either pass as human or hope that the user follows them back.
+Our study focused on analyzing interaction between human and bot Twitter users. We used \emph{BotOrNot}, combined with unsupervised machine learning, to cluster users and determine how bots gain visibility with their target audience. We determined that bots are unlikely to engage with human users beyond simply following them.
 
 \subsection{Further Work}
 Although we were able to manually identify advertising links, when we retrieved data on individual Tweets we did not expand Twitter's shortened URL format. This made media, such as photos, appear identical to other links, since Twitter represents media as URLs. In addition, the sample size for manual classification was small by necessity; setting up a web service such as Mechanical Turk to crowdsource this account classification would improve analysis and clustering.
@@ -202,9 +228,9 @@ Although we were able to manually identify advertising links, when we retrieved 
 
 \appendix
 \section{Contributions}
-Alic Szecsei provided data retrieval methods for Twitter accounts, programmed the machine learning clustering, and wrote the data analysis.
+Alic Szecsei provided data retrieval methods for Twitter accounts, programmed the unsupervised machine learning, and wrote the data analysis.
 
-Willem DeJong programmed BotOrNot score retrieval methods, retrieved data for Twitter accounts to store in SQL databases, and created many of the graphs and charts.
+Willem DeJong programmed BotOrNot score retrieval, retrieved data for Twitter accounts to store in SQL databases, and created many of the graphs and charts.
 
 %\balancecolumns % GM June 2007
 % That's all folks!
