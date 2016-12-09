@@ -139,7 +139,7 @@ Aral and Walker (2011) showed that social networks are highly effective at manip
 
 \subsection{Problem Statement}
 % 1.2 Problem Statement (1 paragraph)
-While there have been multiple approaches to bot detection\cite{Davis:BotOrNot}\cite{Stringhini:DetectSpam}\cite{Xiao:ClusterFakeAccounts}, these have been restrained to simple detection. Very few have attempted to examine the ways that these fake accounts interact with real users. Our goal is to find a number of bot accounts and determine how they use social media to affect their target users. Determining which bots are attempting to manipulate social networks and which are providing services to human users is an import aspect of bot detection, and one we believe can be improved by examining how malicious bots interact with human users.
+While there have been multiple approaches to bot detection\cite{Stringhini:DetectSpam}\cite{Xiao:ClusterFakeAccounts}\cite{Chu:DetectAutomation}, these have been restrained to simple detection. Very few have attempted to examine the ways that these fake accounts interact with real users. Our goal is to find a number of bot accounts and determine how they use social media to affect their target users. Determining which bots are attempting to manipulate social networks and which are providing services to human users is an import aspect of bot detection, and one we believe can be improved by examining how malicious bots interact with human users.
 
 \subsection{Proposed Approach}
 % 1.3 Proposed Approach (1 paragraph)
@@ -149,9 +149,19 @@ In this paper, we use data from a bot-detection service run by Indiana Universit
 % 1.4 Key Results (1-2 paragraph)
 We found a general inverse trend between the \emph{BotOrNot} score for a cluster and the number of retweets made by the cluster. In addition, a similar inverse trend exists for the number of links tweeted by users, and the number of mentions made by users.
 
+Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum.
+
 \section{Related Work}
 % RELATED WORK (1/2 page)
-Lorem ipsum
+Davis (2016)\cite{Davis:BotOrNot} and Dickerson (2014)\cite{Dickerson:Sentiment}. [TODO: Talk about cited papers, what their results were, how those results were relevant to our data] Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum.
+
+Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+
+Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum.
+
+Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum.
+
+Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum.
 
 \section{Proposed Approach}
 % PROPOSED APPROACH (1 page)
@@ -159,15 +169,16 @@ To retrieve a list of human and bot Twitter accounts, we compiled a list of 113 
 
 After discovering a number of inconsistencies with the overall BotOrNot score, we determined that more information was required for automated analysis of Twitter accounts. Using unsupervised machine learning to cluster accounts let us successfully organize a large number of accounts into separate categories, which we manually classified and verified. As described by Bessi and Ferrera\cite{Bessi:PresElect}, we retrieved the most important descriptors of bots: whether they're using the default appearance, their retweet-to-tweet ratio, and others, in addition to the \emph{BotOrNot} score and category scores. However, our best results were found when simply clustering based on the \emph{BotOrNot} category scores.
 
+To classify each cluster, we set up a basic Python script using Selenium that displayed a sample set of Twitter feeds, and allowed a user to submit a category for the user[TODO: What categories?]. Based on the categories reported for the cluster, we could determine what type of Twitter account a user was likely to be. We then examined the average \emph{BotOrNot} scores for these categories.
+
 
 
 \section{Results \& Discussion}
 % RESULTS & DISCUSSIONS (3 pages including tables and figures)
-Lorem ipsum
 
 \section{Conclusion}
 % CONCLUSION (~1/4 pages)
-Lorem ipsum
+While some spambots use hashtags to make their tweets more visible, the vast majority of bots don't directly interact with human users. Instead, they're more likely to simply follow a large number of users, and either pass as human or hope that the user follows them back.
 
 \subsection{Further Work}
 Although we were able to manually identify advertising links, when we retrieved data on individual Tweets we did not expand Twitter's shortened URL format. This made media, such as photos, appear identical to other links, since Twitter represents media as URLs. In addition, the sample size for manual classification was small by necessity; setting up a web service such as Mechanical Turk to crowdsource this account classification would improve analysis and clustering.
