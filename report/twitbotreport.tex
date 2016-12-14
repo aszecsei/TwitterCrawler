@@ -202,41 +202,32 @@ Using these social behaviors, we were able to determine how each cluster and cat
 \section{Results \& Discussion}
 % RESULTS & DISCUSSIONS (3 pages including tables and figures)
 
+Examining the correctness of \emph{BotOrNot} scoring was the first part of analysis we performed. Manually determining whether a number of accounts were bots, humans, or indeterminate, we found that the majority of accounts with a \emph{BotOrNot} score over 50\% we were unable to determine if the account was automated, or the account was clearly a bot. Likewise, the majority of accounts with a score less than 50\% were clearly human users, as seen in Figures \ref{fig:scorescat} and \ref{fig:barvsaccnt}.
+
 \begin{figure}
-	\caption{Look at this other graph.}
+	\caption{Manual identification of accounts}
 	\centering
-		\includegraphics[width=0.4\textwidth]{imgs/bsvaclr}
+		\includegraphics[width=0.4\textwidth]{imgs/scorenbotcolor}
+	\label{fig:scorescat}
+	
 \end{figure}
 
 \begin{figure}
-	\caption{Look at this other graph.}
+	\caption{Manual identification of accounts}
 	\centering
-		\includegraphics[width=0.4\textwidth]{imgs/csvsourclusterscoresubscore}
+		\includegraphics[width=0.6\textwidth]{imgs/barvsaccnt}
+	\label{fig:barvsaccnt}
 \end{figure}
+
+We next examined how \emph{BotOrNot}'s category subscores aligned with its overall account score.
 
 \begin{figure}
-	\caption{Look at this other graph.}
+	\caption{\emph{BotOrNot} Scores vs Category Subscores}
 	\centering
-		\includegraphics[width=0.4\textwidth]{imgs/rtubycourclusterscoresubscore}
+		\includegraphics[width=0.6\textwidth]{imgs/ourscorevssubscore}
+	\label{fig:scoresubscore}
 \end{figure}
 
-\begin{figure}
-	\caption{Look at this other graph.}
-	\centering
-		\includegraphics{imgs/scorenbotcolor}
-\end{figure}
-
-\begin{figure}
-	\caption{Look at this other graph.}
-	\centering
-		\includegraphics[width=0.4\textwidth]{imgs/svacs}
-\end{figure}
-
-\begin{figure*}
-  \caption{Look at this graph.}
-  \centering
-    \includegraphics[width=\textwidth]{imgs/bhvc}
-\end{figure*}
 
 \section{Conclusion}
 % CONCLUSION (~1/4 pages)
