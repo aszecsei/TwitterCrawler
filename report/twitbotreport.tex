@@ -187,6 +187,8 @@ After discovering these issues, we determined that more information was required
 
 To classify each cluster, we set up a basic Python script using Selenium that displayed a sample set of Twitter feeds, and allowed a human classifier to submit a category for that Twitter user. Based on the overall classification associated with the cluster, we could determine what type of Twitter account a user who also belonged to that cluster was likely to be. We manually categorized 1,000 of these accounts, split evenly among each cluster, to verify both our clustering and \emph{BotOrNot}'s overall scoring. This manual classification allowed us to verify whether or not the averaged \emph{BotOrNot} score for each cluster was an accurate descriptor for the entire cluster.
 
+To avoid the issue where accounts with low numbers of tweets were miscategorized as being bots, we filtered out Twitter accounts with fewer than 100 tweets.
+
 \subsection{Tweet Analysis}
 
 We examined the possible ways that bots can engage with human users on the Twitter platform, determining that these vectors consisted primarily of:
