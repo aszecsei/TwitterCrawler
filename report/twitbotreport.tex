@@ -139,7 +139,7 @@ Aral and Walker (2011) showed that social networks are highly effective at manip
 
 \subsection{Problem Statement}
 % 1.2 Problem Statement (1 paragraph)
-While there have been multiple approaches to bot detection\cite{Stringhini:DetectSpam}\cite{Xiao:ClusterFakeAccounts}\cite{Chu:DetectAutomation}, these have been restrained to simple detection. Very few have attempted to examine the ways that these fake accounts interact with real users. Our goal is to find a number of bot accounts and determine how they use social media to affect their target users. Determining which bots are attempting to manipulate social networks and which are providing services to human users is an import aspect of bot detection, and one we believe can be improved by examining how malicious bots interact with human users.
+While there have been multiple approaches to bot detection\cite{Stringhini:DetectSpam, Xiao:ClusterFakeAccounts, Chu:DetectAutomation}, these have been restrained to simple detection. Very few have attempted to examine the ways that these fake accounts interact with real users. Our goal is to find a number of bot accounts and determine how they use social media to affect their target users. Determining which bots are attempting to manipulate social networks and which are providing services to human users is an import aspect of bot detection, and one we believe can be improved by examining how malicious bots interact with human users.
 
 \subsection{Proposed Approach}
 % 1.3 Proposed Approach (1 paragraph)
@@ -185,7 +185,7 @@ To ensure that using \emph{BotOrNot} would provide legitimate analysis of Twitte
 
 After discovering these issues, we determined that more information was required for automated analysis of Twitter accounts. Using unsupervised machine learning to cluster accounts enabled us to successfully organize a large number of accounts into separate categories, which were then manually classified and verified. Following the recommendations of Bessi and Ferrera\cite{Bessi:PresElect}, we retrieved the most important descriptors of bots: whether they're using the default Twitter avatar and header image, and their retweet-to-tweet ratio, in addition to the \emph{BotOrNot} score and category scores. While the number of retweets a user has is not readily available, it can be determined whether individual tweets on the user's timeline are retweets or original content. By retrieving the latest tweets of a user and calculating how many retweets were present, we can approximate that user's retweet-to-tweet ratio. Our best clustering results, however, were found when simply clustering based on a combination of the overall \emph{BotOrNot} score and category subscores.
 
-To classify each cluster, we set up a basic Python script using Selenium that displayed a sample set of Twitter feeds, and allowed a human classifier to submit a category for that Twitter user. Based on the overall classification associated with the cluster, we could determine what type of Twitter account a user who also belonged to that cluster was likely to be. We manually categorized 1,000 of these accounts, split evenly among each cluster, to verify both our clustering and \emph{BotOrNot}'s overall scoring.
+To classify each cluster, we set up a basic Python script using Selenium that displayed a sample set of Twitter feeds, and allowed a human classifier to submit a category for that Twitter user. Based on the overall classification associated with the cluster, we could determine what type of Twitter account a user who also belonged to that cluster was likely to be. We manually categorized 1,000 of these accounts, split evenly among each cluster, to verify both our clustering and \emph{BotOrNot}'s overall scoring. This manual classification allowed us to verify whether or not the averaged \emph{BotOrNot} score for each cluster was an accurate descriptor for the entire cluster.
 
 \subsection{Tweet Analysis}
 
@@ -221,9 +221,9 @@ Examining the correctness of \emph{BotOrNot} scoring was the first part of the a
 \begin{tabular}{l*{5}{c}}
 Category          & [0, 20\%) & [20\%, 40\%) & [40\%, 60\%) & [60\%, 80\%) & [80\%, 100\%] \\
 \hline
-Human 								& 41 & 348 & 242 & 31 & 0  \\
-Bot            & 1 & 8 & 67 & 55 & 10  \\
-Indeterminate           & 1 & 26 & 117 & 53 &  0  \\
+Human									& 10 & 150 & 277 & 204 & 21 \\
+Bot            				& 0  & 1   & 17  & 70  & 53  \\
+Indeterminate         & 0  & 5   & 37  & 114 & 41  \\
 \end{tabular}
 \caption{Number of manually classified accounts within \emph{BotOrNot} score ranges}
 \end{table*}
