@@ -28,12 +28,10 @@ C.~A. Davis, O.~Varol, E.~Ferrara, A.~Flammini, and F.~Menczer.
 \newblock Botornot: {A} system to evaluate social bots.
 \newblock {\em CoRR}, abs/1602.00975, 2016.
 
-\bibitem{Dickerson:Sentiment}
-J.~P. Dickerson, V.~Kagan, and V.~S. Subrahmanian.
-\newblock Using sentiment to detect bots on twitter: Are humans more
-  opinionated than bots?
-\newblock In {\em 2014 IEEE/ACM International Conference on Advances in Social
-  Networks Analysis and Mining (ASONAM 2014)}, pages 620--627, Aug 2014.
+\bibitem{Ferrara:RiseSocial}
+E.~Ferrara, O.~Varol, C.~Davis, F.~Menczer, and A.~Flammini.
+\newblock The rise of social bots.
+\newblock {\em Commun. ACM}, 59(7):96--104, June 2016.
 
 \bibitem{Ratkiewicz:PoliticalAbuse}
 J.~Ratkiewicz, M.~Conover, M.~Meiss, B.~Goncalves, A.~Flammini, and F.~Menczer.
