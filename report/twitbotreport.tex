@@ -153,7 +153,7 @@ We also verified \emph{BotOrNot}'s bot detection process, while presenting an un
 
 \section{Related Work}
 % RELATED WORK (1/2 page)
-Davis (2016)\cite{Davis:BotOrNot} and Dickerson (2014)\cite{Dickerson:Sentiment}. [TODO: Talk about cited papers, what their results were, how those results were relevant to our data] Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum.
+Davis (2016)\cite{Davis:BotOrNot} and Dickerson (2014)\cite{Dickerson:Sentiment}. [TODO: Talk about cited papers, what their results were, how those results were relevant to our data] Lorem ipsum lorem ipsum ipsum lorem lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum.
 
 Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
 
@@ -206,7 +206,7 @@ Using these social behaviors, we were able to determine how each cluster and cat
 \section{Results \& Discussion}
 % RESULTS & DISCUSSIONS (3 pages including tables and figures)
 
-Examining the correctness of \emph{BotOrNot} scoring was the first part of analysis performed. We manually determined whether a number of accounts were bots, humans, or indeterminate. For the majority of accounts with a \emph{BotOrNot} score over 50\%, we were either unable to conclusively determine if the account was automated, or the account was definitely a bot. In addition, accounts with a \emph{BotOrNot} score less than 50\% were almost entirely found to be human users, as seen in Figure \ref{fig:scorescat}.
+Examining the correctness of \emph{BotOrNot} scoring was the first part of the analysis performed. We manually determined whether a number of accounts were bots, humans, or indeterminate. For the majority of accounts with a \emph{BotOrNot} score over 50\%, either we were unable to conclusively determine if the account was automated, or we determined that the account was definitely a bot. In addition, accounts with a \emph{BotOrNot} score less than 50\% were almost entirely found to be human users, as seen in Figure \ref{fig:scorescat}.
 
 \begin{figure}[h!]
 	\caption{Manual identification of accounts}
@@ -216,7 +216,7 @@ Examining the correctness of \emph{BotOrNot} scoring was the first part of analy
 	
 \end{figure}
 
-We next examined how an account's overall \emph{BotOrNot} account score aligned with the average of its corresponding category subscores, confirming that, with some deviations, the \emph{BotOrNot} score provided a better prediction of whether or not a user's account was automated.
+We next examined how an account's overall \emph{BotOrNot} score aligned with the average of its corresponding category subscores, confirming that, with some deviations, the \emph{BotOrNot} score was a better predictor of whether or not a user's account was automated. From Figure \ref{fig:scoresubscore}, we see that classifying the accounts based on the overall \emph{BotOrNot} score is more effective than using the averaged category subscores.
 
 \begin{figure}[h!]
 	\caption{\emph{BotOrNot} Scores vs Category Subscores}
@@ -225,7 +225,7 @@ We next examined how an account's overall \emph{BotOrNot} account score aligned 
 	\label{fig:scoresubscore}
 \end{figure}
 
-Our unsupervised machine learning algorithms were able to similarly separate bot users and human users, as seen in Figure \ref{fig:clustscore}.
+Our unsupervised machine learning algorithms were able to similarly separate bot users and human users, as seen in Figure \ref{fig:clustscore}. Clusters are visible on the same horizontal line, and these clusters tend to be either mainly bots or mainly humans.
 
 \begin{figure}[h!]
 	\caption{\emph{BotOrNot} Clustering vs Average Scores}
@@ -239,7 +239,7 @@ As seen in Figure \ref{fig:ment1}, we found that Twitter bots tended to not ment
 
 \begin{quote}If your application creates or facilitates automated reply messages or mentions to many users, the recipients must request or otherwise indicate an intent to be contacted in advance.\cite{twitter:automation}\end{quote}
 
-However, those bots that \emph{do} mention users do so regularly, as shown in Figure \ref{fig:ment2}.
+In Figure \ref{fig:ment2}, we examine the amount that accounts in clusters that mention users actually do so. If bots tended towards a similar rate of mentioning users as humans did, we would expect to see the data remain similar across clusters from Figure \ref{fig:ment1} to Figure \ref{fig:ment2}. However, since bots tend to mention at a higher frequency when they do mention other users, clusters containing bots have comparatively higher mentioning rates in Figure \ref{fig:ment2}. In clusters of humans, the mentioning characteristics of those users is more uniform. In contract, in the bot clusters, users tend to have either a medium amount of mentions, or none at all.
 
 \begin{figure}[h!]
 	\caption{Mentions Per Cluster}
@@ -271,17 +271,17 @@ Very few users classified as bots mention other users or retweet their tweets, w
 
 \subsection{Hashtags}
 
-Due to some selection bias for the twitter accounts we scanned, a disproportionate number of users tweeted using hashtags related to a shared interest, such as independent game development.
+Due to some selection bias for the Twitter accounts we scanned, a disproportionate number of users tweeted using hashtags related to a shared interest, such as independent game development.
 
-However, examining how many times each user in a cluster used a hashtag gave a more indicative view of hashtags used for spamming, such as ``fifa15coins'' and a number of sexually explicit hashtags. Many of these spammed hashtags were only tweeted by a single user, which indicates that the creators of these spam accounts attempt to avoid overlap in which hashtags they are spamming. While Twitter's terms of service forbids automatically posting into the trending topics, it does not forbid using hashtags, allowing for these bots to find commonly popular hashtags and spam them without much apparent risk.
+However, examining how many times each user in a cluster used a hashtag gave a more indicative view of hashtags used for spamming, such as ``fifa15coins'' and a number of sexually explicit hashtags. Many of these spammed hashtags were only tweeted by a single user, which indicates that the creators of these spam accounts attempt to avoid overlap in which hashtags they are spamming. While Twitter's terms of service forbids automatically posting into the trending topics, it does not forbid automation using hashtags, allowing for these bots to find commonly popular hashtags and spam them without much apparent risk.
 
-A large number of users tweeted with the hashtag of ``Finances,'' but under further inspection a large number of these accounts were verified, indicating that while these accounts may exhibit spamming behavior, they were likely controlled by humans.
+A large number of users tweeted with the hashtag of ``Finances,'' but under further inspection a majority of these accounts were verified, indicating that while these accounts may exhibit spamming behavior, they were likely controlled by humans.
 
 \subsection{Following}
 
 While Twitter forbids automated following, it's one of the most common methods bots use to gain attention from human users. Most bots are following over 10,000 users; they also have similarly exaggerated numbers of followers.
 
-We noticed one cluster of users sharing an extremely large number of both followers and accounts they followed; upon further inspection, the majority of these accounts were promotional accounts. Since these accounts tend to follow back, they become a prime target for sockpuppet accounts that want to appear legitimate; both the following and follower tabs are filled with users who have the default Twitter profile picture and no tweets, with many of their creation dates within the last month.
+We noticed one cluster of users sharing an extremely large number of both followers and accounts they followed; upon further inspection, the majority of these accounts were promotional accounts. Since they tend to follow back, these accounts become a prime target for sockpuppet accounts that want to appear legitimate; both the following and follower tabs are filled with users who have the default Twitter profile picture and no tweets, with many of their creation dates within the last month.
 
 \begin{figure}[h!]
 	\caption{Following Per Cluster}
@@ -291,11 +291,11 @@ We noticed one cluster of users sharing an extremely large number of both follow
 
 \subsection{Favoriting}
 
-Examining how often users favorited tweets gave an interesting trend; bots tended to either favorite very few tweets, or a very large number of them, with users hovering in between the two extremes.
+Examining how often users favorited tweets gave an interesting trend; bots tended to either favorite very few tweets, or a very large number of them, with human users hovering in between the two extremes.
 
-We examined the users in clusters 22 and 33, as the users with the largest numbers of favorites and a cluster that favorited a large number of tweets and scored rather heavily in the \emph{BotOrNot} assessment. Cluster 22 was comprised mainly of businesses and other Twitter ``personalities'' such as YouTubers. These users likely either search their names and favorite tweets including that text, or favorite the tweets that mention them as a way of quickly responding to fans.
+We examined the users in clusters 22 and 33. Cluster had the largest number of favorites, while cluster 33 favorited a large number of tweets and scored rather heavily in the \emph{BotOrNot} assessment. Cluster 22 was comprised mainly of businesses and other Twitter ``personalities'' such as YouTubers. These users likely either search their names and favorite tweets including that text, or favorite the tweets that mention them as a way of quickly responding to fans.
 
-Cluster 33, however, was comprised of accounts that tweeted links to related sites with little commentary besides relevant hashtags. These ``aggregator'' Twitter accounts search for hashtags and tweets relating to the topic that they post and then favorite those tweets. This behavior may pass under Twitter's radar because the accounts select phrases to search for that are uncommon, simply reflecting the intermittent behavior of other users.
+Cluster 33, however, was comprised of accounts that tweeted links to related sites with little commentary besides relevant hashtags. These ``aggregator'' Twitter accounts search for hashtags and tweets relating to the topic that they post and then favorite those tweets. This behavior may pass under Twitter's radar because the accounts select phrases to search for that are relatively uncommon, simply reflecting the intermittent behavior of other users.
 
 \begin{figure}[h!]
 	\caption{Favorites Per Cluster}
@@ -311,6 +311,10 @@ Our study focused on analyzing interaction between human and bot Twitter users. 
 Although we were able to manually identify advertising links, when we retrieved data on individual Tweets we did not expand Twitter's shortened URL format. This made media, such as photos, appear identical to other links, since Twitter represents media as URLs. In addition, the sample size for manual classification was small by necessity; setting up a web service such as Mechanical Turk to crowdsource this account classification would improve analysis and clustering.
 
 Furthermore, while several accounts were discovered that exhibited bot-like behavior such as spamming a hashtag, a number of these accounts were verified by Twitter, especially those run by so-called ``financial consultants.'' While a closer examination of these users was outside the scope of this project, they seem closely related to the issue of spambots, and further discussion as to whether these accounts violate Twitter's terms of service seems warranted.
+
+While we sought to provide an analytical overview of our sample users, a deeper statistical analysis of individual clusters and bots is warranted, based on several of the characteristics we identified. In particular, analyzing the distribution of mentions across individual clusters of bots and clusters of humans would lead to greater insight into that aspect of their behavior.
+
+Finally, Twitter allows for users to quote other Tweets, as a commentary layered upon a retweet. This is unlikely to be a vector by which bots interact with humans, but it would provide a further view of Twitter users' behavioral patterns and its absence could possibly indicate automated behaviors.
 
 %
 % The following two commands are all you need in the
