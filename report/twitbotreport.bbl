@@ -1,7 +1,4 @@
-\begin{thebibliography}{1}
-
-\bibitem{twitter:automation}
-Automation rules and best practices, apr 2016.
+\begin{thebibliography}{10}
 
 \bibitem{Aral:Contagion}
 S.~Aral and D.~Walker.
@@ -14,6 +11,10 @@ A.~Bessi and E.~Ferrara.
 \newblock Social bots distort the 2016 {U.S. Presidential} election online
   discussion.
 \newblock {\em First Monday}, 21(11), 2016.
+
+\bibitem{nyt:bots}
+N.~Bilton.
+\newblock Social media bots offer phony friends and real profit, nov 2014.
 
 \bibitem{Chu:DetectAutomation}
 Z.~Chu, S.~Gianvecchio, H.~Wang, and S.~Jajodia.
@@ -43,6 +44,10 @@ G.~Stringhini, C.~Kruegel, and G.~Vigna.
 \newblock Detecting spammers on social networks.
 \newblock In {\em Proceedings of the 26th Annual Computer Security Applications
   Conference}, ACSAC '10, pages 1--9, New York, NY, USA, 2010. ACM.
+
+\bibitem{twitter:automation}
+Twitter.
+\newblock Automation rules and best practices, apr 2016.
 
 \bibitem{Xiao:ClusterFakeAccounts}
 C.~Xiao, D.~M. Freeman, and T.~Hwa.
