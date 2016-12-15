@@ -3,4 +3,7 @@ The style file: abbrv.bst
 Database file #1: sigproc.bib
 Warning--entry type for "Ratkiewicz:PoliticalAbuse" isn't style-file defined
 --line 127 of file sigproc.bib
-(There was 1 warning)
+Warning--entry type for "twitter:automation" isn't style-file defined
+--line 138 of file sigproc.bib
+Warning--to sort, need author or key in twitter:automation
+(There were 3 warnings)
