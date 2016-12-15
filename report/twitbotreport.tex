@@ -216,6 +216,18 @@ Examining the correctness of \emph{BotOrNot} scoring was the first part of the a
 	
 \end{figure}
 
+\begin{table*}
+\centering
+\begin{tabular}{l*{5}{c}}
+Category          & [0, 20\%) & [20\%, 40\%) & [40\%, 60\%) & [60\%, 80\%) & [80\%, 100\%] \\
+\hline
+Human 								& 41 & 348 & 242 & 31 & 0  \\
+Bot            & 1 & 8 & 67 & 55 & 10  \\
+Indeterminate           & 1 & 26 & 117 & 53 &  0  \\
+\end{tabular}
+\caption{Number of manually classified accounts within \emph{BotOrNot} score ranges}
+\end{table*}
+
 We next examined how an account's overall \emph{BotOrNot} score aligned with the average of its corresponding category subscores, confirming that, with some deviations, the \emph{BotOrNot} score was a better predictor of whether or not a user's account was automated. From Figure \ref{fig:scoresubscore}, we see that classifying the accounts based on the overall \emph{BotOrNot} score is more effective than using the averaged category subscores.
 
 \begin{figure}[h!]
@@ -266,16 +278,23 @@ Very few users classified as bots mention other users or retweet their tweets, w
 \begin{figure}[h!]
 	\caption{RTs Per Cluster}
 	\centering
-		\includegraphics[width=0.5\textwidth]{imgs/acctsrtpercluster}
+		\includegraphics[width=0.5\textwidth]{imgs/rt3}
 \end{figure}
 
 \subsection{Hashtags}
 
 Due to some selection bias for the Twitter accounts we scanned, a disproportionate number of users tweeted using hashtags related to a shared interest, such as independent game development.
 
-However, examining how many times each user in a cluster used a hashtag gave a more indicative view of hashtags used for spamming, such as ``fifa15coins'' and a number of sexually explicit hashtags. Many of these spammed hashtags were only tweeted by a single user, which indicates that the creators of these spam accounts attempt to avoid overlap in which hashtags they are spamming. While Twitter's terms of service forbids automatically posting into the trending topics, it does not forbid automation using hashtags, allowing for these bots to find commonly popular hashtags and spam them without much apparent risk.
+However, examining how many times each user in a cluster used a hashtag, as shown in Figure \ref{fig:hsh}, gave a more indicative view of hashtags used for spamming, such as ``fifa15coins'' and a number of sexually explicit hashtags. Many of these spammed hashtags were only tweeted by a single user, which indicates that the creators of these spam accounts attempt to avoid overlap in which hashtags they are spamming. While Twitter's terms of service forbids automatically posting into the trending topics, it does not forbid automation using hashtags, allowing for these bots to find commonly popular hashtags and spam them without much apparent risk.
 
 A large number of users tweeted with the hashtag of ``Finances,'' but under further inspection a majority of these accounts were verified, indicating that while these accounts may exhibit spamming behavior, they were likely controlled by humans.
+
+\begin{figure*}[h!]
+	\caption{Hashtags Per User}
+	\centering
+		\includegraphics[width=0.95\textwidth]{imgs/bhvc}
+	\label{fig:hsh}
+\end{figure*}
 
 \subsection{Following}
 
@@ -353,12 +372,6 @@ Willem DeJong programmed BotOrNot score retrieval, retrieved data for Twitter ac
 	\centering
 		\includegraphics[width=0.5\textwidth]{imgs/followers}
 \end{figure}
-
-\begin{figure*}
-	\caption{Hashtags Per User}
-	\centering
-		\includegraphics[width=0.95\textwidth]{imgs/bhvc}
-\end{figure*}
 
 %\balancecolumns % GM June 2007
 % That's all folks!
