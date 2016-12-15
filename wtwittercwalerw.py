@@ -1,7 +1,7 @@
 #some of these may not be needed, i forget which
 import re
 import sqlite3
-import os  
+import os
 import botornot
 import requests
 import urllib
@@ -14,14 +14,14 @@ import numpy as np
 import plotly.plotly as py
 import tweepy
 import random
-import networkx as nx     
+import networkx as nx
 
 
 twitter_app_auth = {
-    'consumer_key': 'vyk10RI2aIr0a0oMplmK2Ug5t',
-    'consumer_secret': '5GML863VtjeQyAsCsXOfiu2s0ACKbuQn8YoMPwRmeXYTNL6Oez',
-    'access_token': '801556602096668673-xSVbUzobLk3mVtfQ4db4nUQZB7HWDXL',
-    'access_token_secret': '6JGmYXUpdJyTwCsktUuQaLps2qdU9wmaaaEjiqnt6CNcC',
+    'consumer_key': 'C_KEY',
+    'consumer_secret': 'C_SECRET',
+    'access_token': 'A_TOK',
+    'access_token_secret': 'A_TOK_SECRET',
     'wait_on_ratelimit':True
   }
 bon = botornot.BotOrNot(**twitter_app_auth)
@@ -190,7 +190,7 @@ def generatep(sqlfile,edglist):
             try:
                 stars[str(tup[0])].append(str(tup[1]))
             except:
-                stars.update({str(tup[0]):[str(tup[0]),str(tup[1])]})  
+                stars.update({str(tup[0]):[str(tup[0]),str(tup[1])]})
     nstars=[]
     for star in stars:
         nstars.append(stars[star])
@@ -256,8 +256,8 @@ def generatep(sqlfile,edglist):
                     r=-miny
                 p.update({star[0]:calcP(3,r)})
             cnt+=1
-            
-        l=len(star[1:])        
+
+        l=len(star[1:])
         c=0
         non=[]
         ratios={}
@@ -331,8 +331,8 @@ def bargraphbotvscore(sqlfile,name,mode=0):
     bg.bar(xb,ourbots,width=1,color=(1.0,0.0,0.0))
     plt.savefig(name+".pdf")
     plt.close()
-            
-        
+
+
 def getUlist(sqlfile):
     conn=sqlite3.connect(sqlfile)
     cur=conn.cursor()
@@ -342,7 +342,7 @@ def getUlist(sqlfile):
     for u in uli:
         Ulist.append(u[0])
     return Ulist
-    
+
 def useBotOrNot(sqlfile):
     conna=sqlite3.connect(sqlfile)
     cur=conna.cursor()
@@ -446,7 +446,7 @@ def geturlsmaybe(text):
         ind=found.end()+ind
         if re.match("[.!]",urls[len(urls)-1])!=None:
             urls=urls[:len(urls)-1]
-            
+
         found=re.search("( |^|\@)(https?:\/\/)?([\da-z-]+\.)+([a-z]+)(\/(?:[\/\w \.-]*)*\/?)?([\/?#].*)?",text[ind:])
     return urls
 #uses previous three functions to extract data from a tweet
@@ -464,7 +464,7 @@ def extractfromtweets(sqlfile,twtid):
         conn.commit()
     conn.close()
 #extractfromtweets("udataf3.sqlite",66734)
-    
+
     #( |^)(https?:\/\/)?([\da-z-]+\.)+([a-z]+)(\/(?:[\/\w \.-]*)*\/?)?([\/?#].*)?
 #used in crawl to grab tweet data
 def getData(screenName):
@@ -475,13 +475,13 @@ def getData(screenName):
     #print(sList)
     b=0
     while b<5:
-        try:    
+        try:
             for status in sList:
                 print(status)
                 hashes=""
                 zz=status._json["entities"]['hashtags']
                 for yy in zz:
-                    hashes=hashes+"#"+yy["text"]   
+                    hashes=hashes+"#"+yy["text"]
                 zz=status._json["entities"]['user_mentions']
                 ats=""
                 for yy in zz:
@@ -489,7 +489,7 @@ def getData(screenName):
                 zz=status._json["entities"]['urls']
                 urls=""
                 for yy in zz:
-                    urls=urls+"\n"+yy["expanded_url"]      
+                    urls=urls+"\n"+yy["expanded_url"]
                 ba=0
                 if status.retweeted or ("RT @" in status.text):
                     retweets += 1
@@ -549,7 +549,7 @@ def recreatet(sqlfile):
     except:
         pass
     try:
-        cur.execute("create table botornotscore(sname varchar(50) primary key, score float);")    
+        cur.execute("create table botornotscore(sname varchar(50) primary key, score float);")
     except:
         pass
     try:
@@ -557,9 +557,9 @@ def recreatet(sqlfile):
     except:
         pass
     try:
-        cur.execute("create table ourclassify(sname varchar(50) primary key, isbot boolean);")  
+        cur.execute("create table ourclassify(sname varchar(50) primary key, isbot boolean);")
     except:
-        pass        
+        pass
     conn.commit()
     conn.close()
 #next three are gonna be used as an sql function if needed
@@ -619,7 +619,7 @@ def getdatafrom(depth,ulist,xx):
                 print("oops "+str(user.screen_name)+"  "+str(e))
                 time.sleep(1)
                 continue
-                        
+
             bb=0
             while bb<5:
                 try:
@@ -643,9 +643,9 @@ def getdatafrom(depth,ulist,xx):
                 sList = tweepy.Cursor(api.followers, screen_name=user.screen_name).items(10)
                 b=0
                 while b<5:
-                    try:                
+                    try:
                         for usr in sList:
-                            nl.append(usr)             
+                            nl.append(usr)
                             print(usr.screen_name)
                             bb=0
                             while bb<5:
@@ -673,8 +673,8 @@ def getdatafrom(depth,ulist,xx):
                         b+=1
                 #print(nl)
                 getdatafrom(depth-1,nl,xx)
-                    
-                
+
+
 #function that uses userstart for initial list in recursive crawl at depth depth.
 def gather(userstart,depth):
     f=open(userstart,"r")

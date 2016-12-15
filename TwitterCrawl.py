@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 import sqlite3
 
 # API keys
-api_key = urllib.quote_plus("ePEtVRPmUDQFqqQ5X7iJQENdO")
-api_secret = urllib.quote_plus("NoYoe49MQlnyZA7cxcWcb5G3clOrF1ekeqFxPvke1FSygA6PHQ")
+api_key = urllib.quote_plus("API_KEY")
+api_secret = urllib.quote_plus("API_SECRET")
 
 # Generate the credentials
 auth = tweepy.AppAuthHandler(api_key, api_secret)
