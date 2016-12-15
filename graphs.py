@@ -104,17 +104,19 @@ def makehashbar(sqlfile,name,opt=0,opt2=0,clust=0):
     bg.bar(x[:lenn],y,width=1, tick_label=l)
     plt.xticks(nx, l, rotation='vertical')
     if opt2==0:
-        bg.yaxis.set_label_text("# of times used/# of accounts in "+option)
+        bg.yaxis.set_label_text("# of times used/# of accounts in "+option,fontsize=20)
         option2="eq1(x)"
     elif opt2==1:
-        bg.yaxis.set_label_text("# of times used/# of accounts that used it in "+option)
+        bg.yaxis.set_label_text("# of times used/# of accounts that used it in "+option,fontsize=20)
         option2="eq2(x)"
     else:
-        bg.yaxis.set_label_text("# of accounts that used it in "+option)
+        bg.yaxis.set_label_text("# of accounts that used it in "+option,fontsize=20)
         option2="number of accounts that used the hashtag"
     name=name+" "+option2
-    bg.xaxis.set_label_text("HashTags")
-    plt.title("top 100 HashTags for "+option+" "+option2)
+    bg.xaxis.set_label_text("HashTags",fontsize=20)
+    bg.xaxis.set_tick_params(labelsize=12)
+    bg.yaxis.set_tick_params(labelsize=20)
+    #plt.title("top 100 HashTags for "+option+" "+option2)
     #plt.savefig(name+".pdf")
     plt.savefig(name+".png")
     #print(name)
@@ -175,7 +177,7 @@ def scoretoavgcat(sqlfile,name,opt=0):
         option="all"
     else:
         q="select b.*,c.cat from botornotscore as b, catag2 as c where b.sname=c.sname;"
-        option="manuallly clasified"
+        option="manually classified"
     name=name+" "+option
     cur.execute(q)
     data=cur.fetchall()
@@ -200,9 +202,11 @@ def scoretoavgcat(sqlfile,name,opt=0):
     fig=plt.figure(figsize=(50,30))
     bg=fig.add_subplot(111)
     bg.scatter(x,y,s=25,c=c)
-    bg.xaxis.set_label_text("avg of the botornot catagory scores")
-    bg.yaxis.set_label_text("the overall botornot score")
-    plt.title("Score vs avg catagory score ("+option+")")
+    bg.xaxis.set_label_text("avg of the botornot category scores",fontsize=20)
+    bg.yaxis.set_label_text("the overall botornot score",fontsize=20)
+    bg.xaxis.set_tick_params(labelsize=20)
+    bg.yaxis.set_tick_params(labelsize=20)
+    #plt.title("Score vs avg category score ("+option+")")
     
     #bg.scatter(xb,ourbots,s=25,c=(1,0,0,.5),marker="o")
     #plt.savefig(name+".pdf")
@@ -234,8 +238,9 @@ def scatgraphbotvscore(sqlfile,name):
     bg=plt.subplot(191)
     bg.scatter(x,our,s=25,c=cc,marker="s")
     plt.xticks([], [])
-    bg.yaxis.set_label_text("the overall botornot score")
-    plt.title("Scores")
+    bg.yaxis.set_label_text("the overall botornot score",fontsize=20)
+    bg.yaxis.set_tick_params(labelsize=20)
+    #plt.title("Scores")
     #bg.scatter(xb,ourbots,s=25,c=(1,0,0,.5),marker="o")
     #plt.savefig(name+".pdf")
     plt.savefig(name+".png")
@@ -288,67 +293,16 @@ def bargraphbotvscore(sqlfile,name,mode=0):
     bg.bar(xn,ournots,width=1,color=(0.0,0.0,1.0))
     bg.bar(xb,ourbots,width=1,color=(1.0,0.0,0.0))
     bg.bar(xx,idk,width=1,color=(0.0,1.0,0.0))
-    bg.xaxis.set_label_text("accounts")
-    bg.yaxis.set_label_text("the overall botornot score")
-    plt.title("Score vs accounts ("+option+")")
+    bg.xaxis.set_label_text("accounts",fontsize=20)
+    bg.yaxis.set_label_text("the overall botornot score",fontsize=20)
+    bg.xaxis.set_tick_params(labelsize=20)
+    bg.yaxis.set_tick_params(labelsize=20)
+    #plt.title("Score vs accounts ("+option+")")
     #plt.savefig(name+".pdf")
     plt.savefig(name+".png")
     #print(name)
-    plt.close()    
-def binats(sqlfile,opt=3):
-    conn=sqlite3.connect(sqlfile)
-    cur=conn.cursor()
-    q="select t.sname,t.ats,o.cluster from Tweets as t"
-    if opt==1:
-        q=q+", ourclusterscore as o where t.sname=o.sname"
-    elif  opt==2:
-        q=q+", ourclustersubscore as o where t.sname=o.sname"
-    elif  opt==3:
-        q=q+", ourclusterscoresubscore as o where t.sname=o.sname"
-    q=q+";"
-    cur.execute(q)
-    data=cur.fetchall()
-    #print(data)
-    #print data
-    clustedats={}
-    ats={}
-    for tup in data:
-        tt=tup[1]
-        if tt=="":
-            continue
-        if tt[-1]=="@":
-            tt=tt[:-1]
-        ind=tt.find("@")
-        if ind==-1:
-            continue
-        ind2=tt.find("@",ind+1)
-        if ind2==-1:
-            in2=len(tt)
-        if ind==ind2:
-            continue
-        while ind!=-1:
-            at=tt[ind:ind2]
-            ind=ind2
-            ind2=tt.find("@",ind+1)
-            if ind==len(tt):
-                ind=-1
-            try:
-                if tup[0] not in clustedats[tup[2]][at]:
-                    clustedats[tup[2]][at].update({tup[0]:1})
-                    #print("a")
-                else:
-                    clustedats[tup[2]][at][tup[0]]+=1
-                    #print("b")
-            except Exception as ee:
-                try:
-                    clustedats[tup[2]].update({at:{tup[0]:1}})
-                except:
-                    clustedats.update({tup[2]:{at:{tup[0]:1}}})
-                #print(ee)
-                #input()
-    return clustedats    
-#binats("udataf3.sqlite")
-def binrt(sqlfile,opt=3):
+    plt.close()  
+def binurls(sqlfile,opt=3):
     conn=sqlite3.connect(sqlfile)
     cur=conn.cursor()
     q="select t.sname,o.cluster from Tweets as t"
@@ -358,20 +312,294 @@ def binrt(sqlfile,opt=3):
         q=q+", ourclustersubscore as o where t.sname=o.sname"
     elif  opt==3:
         q=q+", ourclusterscoresubscore as o where t.sname=o.sname"
-    q=q+" and t.retweet=1;"
+    q=q+" and t.urls is not null and t.urls!=\"\";"
+    cur.execute(q)
+    data=cur.fetchall()
+    clustedurls={}
+    for tup in data:
+        if tup[1] not in clustedurls:
+            clustedurls[tup[1]]={tup[0]:1.0}
+            #print("a")
+        elif tup[0] not in clustedurls[tup[1]]:
+            clustedurls[tup[1]][tup[0]]=1.0
+            #print("b")
+        else:
+            clustedurls[tup[1]][tup[0]]+=1.0
+    return clustedurls    
+def binats(sqlfile,opt=3,clust=0,opt2=0):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    if opt2==0:
+        q="select t.sname,o.cluster from Tweets as t"
+        if opt==1:
+            q=q+", ourclusterscore as o where t.sname=o.sname"
+        elif  opt==2:
+            q=q+", ourclustersubscore as o where t.sname=o.sname"
+        elif  opt==3:
+            q=q+", ourclusterscoresubscore as o where t.sname=o.sname"
+        q=q+" and t.ats is not null and t.ats!=\"\" and t.retweet=0;"
+        cur.execute(q)
+        data=cur.fetchall()
+        clustedat={}
+        for tup in data:
+            if tup[1] not in clustedat:
+                clustedat[tup[1]]={tup[0]:1.0}
+                #print("a")
+            elif tup[0] not in clustedat[tup[1]]:
+                clustedat[tup[1]][tup[0]]=1.0
+                #print("b")
+            else:
+                clustedat[tup[1]][tup[0]]+=1.0
+        return clustedat
+        
+    elif opt2==1:
+        q="select t.sname,t.ats from Tweets as t"
+        if opt==1:
+            q=q+", ourclusterscore as o where t.sname=o.sname and cluster="+str(clust)
+        elif  opt==2:
+            q=q+", ourclustersubscore as o where t.sname=o.sname and cluster="+str(clust)
+        elif  opt==3:
+            q=q+", ourclusterscoresubscore as o where t.sname=o.sname and cluster="+str(clust)
+        q=q+";"
+        cur.execute(q)
+        data=cur.fetchall()
+        #print data
+        ats={}
+        for tup in data:
+            tt=tup[1]
+            if tt=="":
+                continue
+            if tt[-1]=="@":
+                tt=tt[:-1]
+            ind=tt.find("@")
+            if ind==-1:
+                continue
+            ind2=tt.find("@",ind+1)
+            if ind2==-1:
+                in2=len(tt)
+            if ind==ind2:
+                continue
+            while ind!=-1:
+                at=tt[ind:ind2]
+                #print(at)
+                ind=ind2
+                ind2=tt.find("@",ind+1)
+                if ind==len(tt):
+                    ind=-1
+                try:
+                    if tup[0] not in ats[at]:
+                        ats[at].update({tup[0]:1})
+                    else:
+                        ats[at][tup[0]]+=1
+                except:
+                    ats.update({at:{tup[0]:1}})
+        return ats
+#binats("udataf3.sqlite")
+def binrt(sqlfile,opt=3):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    q="select t.sname,o.cluster,t.rt from udata as t"
+    if opt==1:
+        q=q+", ourclusterscore as o where t.sname=o.sname"
+    elif  opt==2:
+        q=q+", ourclustersubscore as o where t.sname=o.sname"
+    elif  opt==3:
+        q=q+", ourclusterscoresubscore as o where t.sname=o.sname"
+    q=q+" and t.rt>0;"
     cur.execute(q)
     data=cur.fetchall()
     clustedrt={}
     for tup in data:
         if tup[1] not in clustedrt:
-            clustedrt[tup[1]]={tup[0]:1.0}
+            clustedrt[tup[1]]={tup[0]:float(tup[2])}
             #print("a")
-        elif tup[0] not in clustedrt[tup[1]]:
-            clustedrt[tup[1]][tup[0]]=1.0
-            #print("b")
         else:
-            clustedrt[tup[1]][tup[0]]+=1.0
+            clustedrt[tup[1]][tup[0]]=float(tup[2])
     return clustedrt
+def binfollowing(sqlfile,opt=3):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    q="select t.sname,o.cluster,t.frc from udata as t"
+    if opt==1:
+        q=q+", ourclusterscore as o where t.sname=o.sname"
+    elif  opt==2:
+        q=q+", ourclustersubscore as o where t.sname=o.sname"
+    elif  opt==3:
+        q=q+", ourclusterscoresubscore as o where t.sname=o.sname"
+    q=q+" and t.frc>0;"
+    cur.execute(q)
+    data=cur.fetchall()
+    clustedfollowing={}
+    for tup in data:
+        if tup[1] not in clustedfollowing:
+            clustedfollowing[tup[1]]={tup[0]:tup[2]}
+            #print("a")
+        else:
+            clustedfollowing[tup[1]][tup[0]]=tup[2]
+    return clustedfollowing
+def binfollower(sqlfile,opt=3):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    q="select t.sname,o.cluster,t.foc from udata as t"
+    if opt==1:
+        q=q+", ourclusterscore as o where t.sname=o.sname"
+    elif  opt==2:
+        q=q+", ourclustersubscore as o where t.sname=o.sname"
+    elif  opt==3:
+        q=q+", ourclusterscoresubscore as o where t.sname=o.sname"
+    q=q+" and t.foc>0;"
+    cur.execute(q)
+    data=cur.fetchall()
+    clustedfollower={}
+    for tup in data:
+        if tup[1] not in clustedfollower:
+            clustedfollower[tup[1]]={tup[0]:tup[2]}
+            #print("a")
+        else:
+            clustedfollower[tup[1]][tup[0]]=tup[2]
+    return clustedfollower
+def binfaved(sqlfile,opt=3):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    q="select t.sname,o.cluster,t.fac from udata as t"
+    if opt==1:
+        q=q+", ourclusterscore as o where t.sname=o.sname"
+    elif  opt==2:
+        q=q+", ourclustersubscore as o where t.sname=o.sname"
+    elif  opt==3:
+        q=q+", ourclusterscoresubscore as o where t.sname=o.sname"
+    q=q+" and t.fac>0;"
+    cur.execute(q)
+    data=cur.fetchall()
+    clustedfaved={}
+    for tup in data:
+        if tup[1] not in clustedfaved:
+            clustedfaved[tup[1]]={tup[0]:tup[2]}
+            #print("a")
+        else:
+            clustedfaved[tup[1]][tup[0]]=tup[2]
+    return clustedfaved
+def binlisted(sqlfile,opt=3):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    q="select t.sname,o.cluster,t.lic from udata as t"
+    if opt==1:
+        q=q+", ourclusterscore as o where t.sname=o.sname"
+    elif  opt==2:
+        q=q+", ourclustersubscore as o where t.sname=o.sname"
+    elif  opt==3:
+        q=q+", ourclusterscoresubscore as o where t.sname=o.sname"
+    q=q+" and t.lic>0;"
+    cur.execute(q)
+    data=cur.fetchall()
+    clustedlisted={}
+    for tup in data:
+        if tup[1] not in clustedlisted:
+            clustedlisted[tup[1]]={tup[0]:tup[2]}
+            #print("a")
+        else:
+            clustedlisted[tup[1]][tup[0]]=tup[2]
+    return clustedlisted
+def makeurlsbar(sqlfile,name,opt=3,opt2=0):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    q="select cluster,count(cluster) from "
+    option=""
+    if opt==1:
+        q=q+"ourclusterscore group by cluster"
+        option="ourclusterscore"
+    elif  opt==2:
+        q=q+"ourclustersubscore group by cluster"
+        option="ourclustersubscore"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore group by cluster"
+        option="ourclusterscoresubscore"
+    q=q+";"
+    name=name+option
+    clustcnt={}
+    cur.execute(q)
+    for i in cur.fetchall():
+        clustcnt[i[0]]=i[1]
+    q="select cluster,avg(score) from (select b.sname,score,cluster from botornotscore as b, "
+    if opt==1:
+        q=q+"ourclusterscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==2:
+        q=q+"ourclustersubscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore as o where o.sname=b.sname) as c group by cluster"
+    q=q+";"
+    cur.execute(q)    
+    clustavgscore={}
+    for i in cur.fetchall():
+        clustavgscore[i[0]]=i[1]
+    urls=binurls(sqlfile,opt)
+    x=[]
+    y=[]
+    ind=0
+    for xx in urls:
+        cnt=0
+        #print(ind)
+        if opt2==2:
+            cnt=len(urls[xx])
+        else:
+            for xxx in urls[xx]:
+                cnt+=urls[xx][xxx]
+        x.append(ind)
+        ind+=1
+        if opt2==0:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+        elif opt2==1:
+            y.append((xx,float(cnt)/len(urls[xx])))
+        else:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+                
+    y=sorttupr(y,1)
+    lenn=100
+    if len(y)<100:
+        lenn=len(y)
+    yy=y[:lenn]
+    y=[]
+    l=[]
+    c=[]
+    for tup in yy:
+        l.append(str(tup[0]))
+        y.append(tup[1])
+        c.append((clustavgscore[tup[0]],0,1.0-clustavgscore[tup[0]]))
+    #print(name)
+    #m=max(y)
+    #for i in range(0,lenn):
+        #y[i]=y[i]/m
+    fig=plt.figure(figsize=(50,30))
+    bg=fig.add_subplot(111)
+    #fig=plt.figure(figsize=(5,3))
+    #bg = fig.add_subplot(111)
+    bg.set_position([.1,.25,.8,.70])
+    #bg.yaxis.set_smart_bounds(True))
+    #y.sort(reverse=True)
+    bg.bar(x[:lenn],y,width=1, color=c, tick_label=l,)
+    nx=[]
+    for xxx in x[:lenn]:
+        nx.append(xxx+.5)
+    plt.xticks(nx, l)
+    option2=""
+    if opt2==0:
+        bg.yaxis.set_label_text("#tweets with urls/#accounts in cluster",fontsize=20)
+        option2="eq1(x)"
+    elif opt2==1:
+        bg.yaxis.set_label_text("#tweets with urls/#accounts in cluster who uesed urls",fontsize=20)
+        option2="eq2(x)"
+    else:
+        bg.yaxis.set_label_text("#accounts in cluster who uesed urls/#accounts in cluster",fontsize=20)
+        option2="eq3(x)"
+    name=name+" "+option2
+    bg.xaxis.set_tick_params(labelsize=15)
+    bg.yaxis.set_tick_params(labelsize=20)
+    bg.xaxis.set_label_text("Clusters",fontsize=20)
+    #plt.title(option2+" vs clusters ("+option+")")
+    #plt.savefig(name+".pdf")
+    plt.savefig(name+".png")
+    #print(name)
+    plt.close()
 def makertbar(sqlfile,name,opt=3,opt2=0):
     conn=sqlite3.connect(sqlfile)
     cur=conn.cursor()
@@ -448,6 +676,106 @@ def makertbar(sqlfile,name,opt=3,opt2=0):
     bg.set_position([.1,.25,.8,.70])
     #bg.yaxis.set_smart_bounds(True))
     #y.sort(reverse=True)
+    bg.bar(x[:lenn],y,width=1, color=c, tick_label=l,)
+    nx=[]
+    for xxx in x[:lenn]:
+        nx.append(xxx+.5)
+    plt.xticks(nx, l)
+    option2=""
+    if opt2==0:
+        bg.yaxis.set_label_text("#rt/#accounts in cluster",fontsize=20)
+        option2="eq1(x)"
+    elif opt2==1:
+        bg.yaxis.set_label_text("#rt/#accounts in cluster who rt",fontsize=20)
+        option2="eq2(x)"
+    else:
+        bg.yaxis.set_label_text("#accounts in cluster who rt/#accounts in cluster",fontsize=20)
+        option2="eq3(x)"
+    name=name+" "+option2
+    bg.xaxis.set_tick_params(labelsize=15)
+    bg.yaxis.set_tick_params(labelsize=20)
+    bg.xaxis.set_label_text("Clusters",fontsize=20)
+    #plt.title(option2+" vs clusters ("+option+")")
+    #plt.savefig(name+".pdf")
+    plt.savefig(name+".png")
+    #print(name)
+    plt.close()
+def makeatbar(sqlfile,name,opt=3,opt2=0):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    q="select cluster,count(cluster) from "
+    option=""
+    if opt==1:
+        q=q+"ourclusterscore group by cluster"
+        option="ourclusterscore"
+    elif  opt==2:
+        q=q+"ourclustersubscore group by cluster"
+        option="ourclustersubscore"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore group by cluster"
+        option="ourclusterscoresubscore"
+    q=q+";"
+    name=name+option
+    clustcnt={}
+    cur.execute(q)
+    for i in cur.fetchall():
+        clustcnt[i[0]]=i[1]
+    q="select cluster,avg(score) from (select b.sname,score,cluster from botornotscore as b, "
+    if opt==1:
+        q=q+"ourclusterscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==2:
+        q=q+"ourclustersubscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore as o where o.sname=b.sname) as c group by cluster"
+    q=q+";"
+    cur.execute(q)    
+    clustavgscore={}
+    for i in cur.fetchall():
+        clustavgscore[i[0]]=i[1]
+    ats=binats(sqlfile,opt)
+    x=[]
+    y=[]
+    ind=0
+    for xx in ats:
+        cnt=0
+        #print(ind)
+        if opt2==2:
+            cnt=len(ats[xx])
+        else:
+            for xxx in ats[xx]:
+                cnt+=ats[xx][xxx]
+        x.append(ind)
+        ind+=1
+        if opt2==0:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+        elif opt2==1:
+            y.append((xx,float(cnt)/len(ats[xx])))
+        else:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+                
+    y=sorttupr(y,1)
+    lenn=100
+    if len(y)<100:
+        lenn=len(y)
+    yy=y[:lenn]
+    y=[]
+    l=[]
+    c=[]
+    for tup in yy:
+        l.append(str(tup[0]))
+        y.append(tup[1])
+        c.append((clustavgscore[tup[0]],0,1.0-clustavgscore[tup[0]]))
+    #print(name)
+    #m=max(y)
+    #for i in range(0,lenn):
+        #y[i]=y[i]/m
+    fig=plt.figure(figsize=(50,30))
+    bg=fig.add_subplot(111)
+    #fig=plt.figure(figsize=(5,3))
+    #bg = fig.add_subplot(111)
+    bg.set_position([.1,.25,.8,.70])
+    #bg.yaxis.set_smart_bounds(True))
+    #y.sort(reverse=True)
     bg.bar(x[:lenn],y,width=1, color=c, tick_label=l)
     nx=[]
     for xxx in x[:lenn]:
@@ -455,21 +783,423 @@ def makertbar(sqlfile,name,opt=3,opt2=0):
     plt.xticks(nx, l)
     option2=""
     if opt2==0:
-        bg.yaxis.set_label_text("#rt/#users in cluster")
+        bg.yaxis.set_label_text("#tweets with a mention/#accounts in cluster",fontsize=20)
         option2="eq1(x)"
     elif opt2==1:
-        bg.yaxis.set_label_text("#rt/#users in cluster who rt")
+        bg.yaxis.set_label_text("#tweets with a mention/#accounts in cluster who made a mention",fontsize=20)
         option2="eq2(x)"
     else:
-        bg.yaxis.set_label_text("#accounts in cluster who rt/#users in cluster")
+        bg.yaxis.set_label_text("#accounts in cluster who made a mention/#accounts in cluster",fontsize=20)
         option2="eq3(x)"
     name=name+" "+option2
-    bg.xaxis.set_label_text("Clusters")
-    plt.title(option2+" vs individual score ("+option+")")
+    bg.xaxis.set_tick_params(labelsize=15)
+    bg.yaxis.set_tick_params(labelsize=20)
+    bg.xaxis.set_label_text("Clusters",fontsize=20)
+    #plt.title(option2+" vs clusters ("+option+")")
     #plt.savefig(name+".pdf")
     plt.savefig(name+".png")
     #print(name)
     plt.close()
+def makefavedbar(sqlfile,name,opt=3,opt2=0):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    q="select cluster,count(cluster) from "
+    option=""
+    if opt==1:
+        q=q+"ourclusterscore group by cluster"
+        option="ourclusterscore"
+    elif  opt==2:
+        q=q+"ourclustersubscore group by cluster"
+        option="ourclustersubscore"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore group by cluster"
+        option="ourclusterscoresubscore"
+    q=q+";"
+    name=name+option
+    clustcnt={}
+    cur.execute(q)
+    for i in cur.fetchall():
+        clustcnt[i[0]]=i[1]
+    q="select cluster,avg(score) from (select b.sname,score,cluster from botornotscore as b, "
+    if opt==1:
+        q=q+"ourclusterscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==2:
+        q=q+"ourclustersubscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore as o where o.sname=b.sname) as c group by cluster"
+    q=q+";"
+    cur.execute(q)    
+    clustavgscore={}
+    for i in cur.fetchall():
+        clustavgscore[i[0]]=i[1]
+    facs=binfaved(sqlfile,opt)
+    x=[]
+    y=[]
+    ind=0
+    for xx in facs:
+        cnt=0
+        #print(ind)
+        if opt2==2:
+            cnt=len(facs[xx])
+        else:
+            for xxx in facs[xx]:
+                cnt+=facs[xx][xxx]
+        x.append(ind)
+        ind+=1
+        if opt2==0:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+        elif opt2==1:
+            y.append((xx,float(cnt)/len(facs[xx])))
+        else:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+                
+    y=sorttupr(y,1)
+    lenn=100
+    if len(y)<100:
+        lenn=len(y)
+    yy=y[:lenn]
+    y=[]
+    l=[]
+    c=[]
+    for tup in yy:
+        l.append(str(tup[0]))
+        y.append(tup[1])
+        c.append((clustavgscore[tup[0]],0,1.0-clustavgscore[tup[0]]))
+    #print(name)
+    #m=max(y)
+    #for i in range(0,lenn):
+        #y[i]=y[i]/m
+    fig=plt.figure(figsize=(50,30))
+    bg=fig.add_subplot(111)
+    #fig=plt.figure(figsize=(5,3))
+    #bg = fig.add_subplot(111)
+    bg.set_position([.1,.25,.8,.70])
+    #bg.yaxis.set_smart_bounds(True))
+    #y.sort(reverse=True)
+    bg.bar(x[:lenn],y,width=1, color=c, tick_label=l)
+    nx=[]
+    for xxx in x[:lenn]:
+        nx.append(xxx+.5)
+    plt.xticks(nx, l)
+    option2=""
+    if opt2==0:
+        bg.yaxis.set_label_text("#favorited/#accounts in cluster",fontsize=20)
+        option2="eq1(x)"
+    elif opt2==1:
+        bg.yaxis.set_label_text("#favorited/#accounts in cluster who favorited",fontsize=20)
+        option2="eq2(x)"
+    else:
+        bg.yaxis.set_label_text("#accounts in cluster who favorited/#accounts in cluster",fontsize=20)
+        option2="eq3(x)"
+    name=name+" "+option2
+    bg.xaxis.set_tick_params(labelsize=15)
+    bg.yaxis.set_tick_params(labelsize=20)
+    bg.xaxis.set_label_text("Clusters",fontsize=20)
+    #plt.title(option2+" vs clusters ("+option+")")
+    #plt.savefig(name+".pdf")
+    plt.savefig(name+".png")
+    #print(name)
+    plt.close()
+def makelistedbar(sqlfile,name,opt=3,opt2=0):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    q="select cluster,count(cluster) from "
+    option=""
+    if opt==1:
+        q=q+"ourclusterscore group by cluster"
+        option="ourclusterscore"
+    elif  opt==2:
+        q=q+"ourclustersubscore group by cluster"
+        option="ourclustersubscore"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore group by cluster"
+        option="ourclusterscoresubscore"
+    q=q+";"
+    name=name+option
+    clustcnt={}
+    cur.execute(q)
+    for i in cur.fetchall():
+        clustcnt[i[0]]=i[1]
+    q="select cluster,avg(score) from (select b.sname,score,cluster from botornotscore as b, "
+    if opt==1:
+        q=q+"ourclusterscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==2:
+        q=q+"ourclustersubscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore as o where o.sname=b.sname) as c group by cluster"
+    q=q+";"
+    cur.execute(q)    
+    clustavgscore={}
+    for i in cur.fetchall():
+        clustavgscore[i[0]]=i[1]
+    lics=binlisted(sqlfile,opt)
+    x=[]
+    y=[]
+    ind=0
+    for xx in lics:
+        cnt=0
+        #print(ind)
+        if opt2==2:
+            cnt=len(lics[xx])
+        else:
+            for xxx in lics[xx]:
+                cnt+=lics[xx][xxx]
+        x.append(ind)
+        ind+=1
+        if opt2==0:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+        elif opt2==1:
+            y.append((xx,float(cnt)/len(lics[xx])))
+        else:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+                
+    y=sorttupr(y,1)
+    lenn=100
+    if len(y)<100:
+        lenn=len(y)
+    yy=y[:lenn]
+    y=[]
+    l=[]
+    c=[]
+    for tup in yy:
+        l.append(str(tup[0]))
+        y.append(tup[1])
+        c.append((clustavgscore[tup[0]],0,1.0-clustavgscore[tup[0]]))
+    #print(name)
+    #m=max(y)
+    #for i in range(0,lenn):
+        #y[i]=y[i]/m
+    fig=plt.figure(figsize=(50,30))
+    bg=fig.add_subplot(111)
+    #fig=plt.figure(figsize=(5,3))
+    #bg = fig.add_subplot(111)
+    bg.set_position([.1,.25,.8,.70])
+    #bg.yaxis.set_smart_bounds(True))
+    #y.sort(reverse=True)
+    bg.bar(x[:lenn],y,width=1, color=c, tick_label=l)
+    nx=[]
+    for xxx in x[:lenn]:
+        nx.append(xxx+.5)
+    plt.xticks(nx, l)
+    option2=""
+    if opt2==0:
+        bg.yaxis.set_label_text("#lists/#accounts in cluster",fontsize=20)
+        option2="eq1(x)"
+    elif opt2==1:
+        bg.yaxis.set_label_text("#lists/#accounts in cluster who are listed",fontsize=20)
+        option2="eq2(x)"
+    else:
+        bg.yaxis.set_label_text("#accounts in cluster who are listed/#accounts in cluster",fontsize=20)
+        option2="eq3(x)"
+    name=name+" "+option2
+    bg.xaxis.set_tick_params(labelsize=15)
+    bg.yaxis.set_tick_params(labelsize=20)
+    bg.xaxis.set_label_text("Clusters",fontsize=20)
+    #plt.title(option2+" vs clusters ("+option+")")
+    #plt.savefig(name+".pdf")
+    plt.savefig(name+".png")
+    #print(name)
+    plt.close()
+def makefollerbar(sqlfile,name,opt=3,opt2=0):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    q="select cluster,count(cluster) from "
+    option=""
+    if opt==1:
+        q=q+"ourclusterscore group by cluster"
+        option="ourclusterscore"
+    elif  opt==2:
+        q=q+"ourclustersubscore group by cluster"
+        option="ourclustersubscore"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore group by cluster"
+        option="ourclusterscoresubscore"
+    q=q+";"
+    name=name+option
+    clustcnt={}
+    cur.execute(q)
+    for i in cur.fetchall():
+        clustcnt[i[0]]=i[1]
+    q="select cluster,avg(score) from (select b.sname,score,cluster from botornotscore as b, "
+    if opt==1:
+        q=q+"ourclusterscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==2:
+        q=q+"ourclustersubscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore as o where o.sname=b.sname) as c group by cluster"
+    q=q+";"
+    cur.execute(q)    
+    clustavgscore={}
+    for i in cur.fetchall():
+        clustavgscore[i[0]]=i[1]
+    focs=binfollower(sqlfile,opt)
+    x=[]
+    y=[]
+    ind=0
+    for xx in focs:
+        cnt=0
+        #print(ind)
+        if opt2==2:
+            cnt=len(focs[xx])
+        else:
+            for xxx in focs[xx]:
+                cnt+=focs[xx][xxx]
+        x.append(ind)
+        ind+=1
+        if opt2==0:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+        elif opt2==1:
+            y.append((xx,float(cnt)/len(focs[xx])))
+        else:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+                
+    y=sorttupr(y,1)
+    lenn=100
+    if len(y)<100:
+        lenn=len(y)
+    yy=y[:lenn]
+    y=[]
+    l=[]
+    c=[]
+    for tup in yy:
+        l.append(str(tup[0]))
+        y.append(tup[1])
+        c.append((clustavgscore[tup[0]],0,1.0-clustavgscore[tup[0]]))
+    #print(name)
+    #m=max(y)
+    #for i in range(0,lenn):
+        #y[i]=y[i]/m
+    fig=plt.figure(figsize=(50,30))
+    bg=fig.add_subplot(111)
+    #fig=plt.figure(figsize=(5,3))
+    #bg = fig.add_subplot(111)
+    bg.set_position([.1,.25,.8,.70])
+    #bg.yaxis.set_smart_bounds(True))
+    #y.sort(reverse=True)
+    bg.bar(x[:lenn],y,width=1, color=c, tick_label=l)
+    nx=[]
+    for xxx in x[:lenn]:
+        nx.append(xxx+.5)
+    plt.xticks(nx, l)
+    option2=""
+    if opt2==0:
+        bg.yaxis.set_label_text("#followers/#accounts in cluster",fontsize=20)
+        option2="eq1(x)"
+    elif opt2==1:
+        bg.yaxis.set_label_text("#followers/#accounts in cluster who are followed",fontsize=20)
+        option2="eq2(x)"
+    else:
+        bg.yaxis.set_label_text("#accounts in cluster who are followed/#accounts in cluster",fontsize=20)
+        option2="eq3(x)"
+    name=name+" "+option2
+    bg.xaxis.set_tick_params(labelsize=15)
+    bg.yaxis.set_tick_params(labelsize=20)
+    bg.xaxis.set_label_text("Clusters",fontsize=20)
+    #plt.title(option2+" vs clusters ("+option+")")
+    #plt.savefig(name+".pdf")
+    plt.savefig(name+".png")
+    #print(name)
+    plt.close()
+def makefollingbar(sqlfile,name,opt=3,opt2=0):
+    conn=sqlite3.connect(sqlfile)
+    cur=conn.cursor()
+    q="select cluster,count(cluster) from "
+    option=""
+    if opt==1:
+        q=q+"ourclusterscore group by cluster"
+        option="ourclusterscore"
+    elif  opt==2:
+        q=q+"ourclustersubscore group by cluster"
+        option="ourclustersubscore"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore group by cluster"
+        option="ourclusterscoresubscore"
+    q=q+";"
+    name=name+option
+    clustcnt={}
+    cur.execute(q)
+    for i in cur.fetchall():
+        clustcnt[i[0]]=i[1]
+    q="select cluster,avg(score) from (select b.sname,score,cluster from botornotscore as b, "
+    if opt==1:
+        q=q+"ourclusterscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==2:
+        q=q+"ourclustersubscore as o where o.sname=b.sname) as c group by cluster"
+    elif  opt==3:
+        q=q+"ourclusterscoresubscore as o where o.sname=b.sname) as c group by cluster"
+    q=q+";"
+    cur.execute(q)    
+    clustavgscore={}
+    for i in cur.fetchall():
+        clustavgscore[i[0]]=i[1]
+    frcs=binfollowing(sqlfile,opt)
+    x=[]
+    y=[]
+    ind=0
+    for xx in frcs:
+        cnt=0
+        #print(ind)
+        if opt2==2:
+            cnt=len(frcs[xx])
+        else:
+            for xxx in frcs[xx]:
+                cnt+=frcs[xx][xxx]
+        x.append(ind)
+        ind+=1
+        if opt2==0:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+        elif opt2==1:
+            y.append((xx,float(cnt)/len(frcs[xx])))
+        else:
+            y.append((xx,float(cnt)/clustcnt[xx]))
+                
+    y=sorttupr(y,1)
+    lenn=100
+    if len(y)<100:
+        lenn=len(y)
+    yy=y[:lenn]
+    y=[]
+    l=[]
+    c=[]
+    for tup in yy:
+        l.append(str(tup[0]))
+        y.append(tup[1])
+        c.append((clustavgscore[tup[0]],0,1.0-clustavgscore[tup[0]]))
+    #print(name)
+    #m=max(y)
+    #for i in range(0,lenn):
+        #y[i]=y[i]/m
+    fig=plt.figure(figsize=(50,30))
+    bg=fig.add_subplot(111)
+    #fig=plt.figure(figsize=(5,3))
+    #bg = fig.add_subplot(111)
+    bg.set_position([.1,.25,.8,.70])
+    #bg.yaxis.set_smart_bounds(True))
+    #y.sort(reverse=True)
+    bg.bar(x[:lenn],y,width=1, color=c, tick_label=l)
+    nx=[]
+    for xxx in x[:lenn]:
+        nx.append(xxx+.5)
+    plt.xticks(nx, l)
+    option2=""
+    if opt2==0:
+        bg.yaxis.set_label_text("#following/#accounts in cluster",fontsize=20)
+        option2="eq1(x)"
+    elif opt2==1:
+        bg.yaxis.set_label_text("#following/#accounts in cluster who are following",fontsize=20)
+        option2="eq2(x)"
+    else:
+        bg.yaxis.set_label_text("#accounts in cluster who are following/#accounts in cluster",fontsize=20)
+        option2="eq3(x)"
+    name=name+" "+option2
+    bg.xaxis.set_tick_params(labelsize=15)
+    bg.yaxis.set_tick_params(labelsize=20)
+    bg.xaxis.set_label_text("Clusters",fontsize=20)
+    #plt.title(option2+" vs clusters ("+option+")")
+    #plt.savefig(name+".pdf")
+    plt.savefig(name+".png")
+    #print(name)
+    plt.close()    
 def scatscorevsclustscore(sqlfile,name,opt=3,opt2=0):
     conn=sqlite3.connect(sqlfile)
     cur=conn.cursor()
@@ -529,16 +1259,18 @@ def scatscorevsclustscore(sqlfile,name,opt=3,opt2=0):
     bg.grid(True)
     for line in bg.get_ygridlines():
         line.set_linestyle('-')
-    bg.xaxis.set_label_text("individual score")
-    bg.yaxis.set_label_text("aveage cluster score")
-    plt.title("average cluster score vs individual score ("+option+" "+option2+")")
+    bg.xaxis.set_label_text("individual score",fontsize=20)
+    bg.xaxis.set_tick_params(labelsize=20)
+    bg.yaxis.set_tick_params(labelsize=20)
+    bg.yaxis.set_label_text("average cluster score",fontsize=20)
+    #plt.title("average cluster score vs individual score ("+option+" "+option2+")")
     #bg.scatter(xb,ourbots,s=25,c=(1,0,0,.5),marker="o")
     #plt.savefig(name+".pdf")
     plt.savefig(name+".png")
     #print(name)
     plt.close()
 def graphallclustersalltypes(sqlfile):
-    base="C:\\Users\\Willem\\Documents\\graphs"
+    base="graphs"
     try:
         os.mkdir(base)
     except:
@@ -571,6 +1303,36 @@ def graphallclustersalltypes(sqlfile):
     b6=base+"\\score vs avg category score"
     try:
         os.mkdir(b6)
+    except:
+        pass
+    b7=base+"\\at cnt vs cluster"    
+    try:
+        os.mkdir(b7)
+    except:
+        pass
+    b8=base+"\\follower cnt vs cluster"    
+    try:
+        os.mkdir(b8)
+    except:
+        pass
+    b9=base+"\\following cnt vs cluster"    
+    try:
+        os.mkdir(b9)
+    except:
+        pass
+    b10=base+"\\listed cnt vs cluster"    
+    try:
+        os.mkdir(b10)
+    except:
+        pass
+    b11=base+"\\favorited cnt vs cluster"    
+    try:
+        os.mkdir(b11)
+    except:
+        pass
+    b12=base+"\\url cnt vs cluster"    
+    try:
+        os.mkdir(b12)
     except:
         pass
     d1="\\all"
@@ -617,6 +1379,78 @@ def graphallclustersalltypes(sqlfile):
         os.mkdir(b5+d4)
     except:
         pass
+    try:
+        os.mkdir(b7+d2)
+    except:
+        pass
+    try:
+        os.mkdir(b7+d3)
+    except:
+        pass
+    try:
+        os.mkdir(b7+d4)
+    except:
+        pass
+    try:
+        os.mkdir(b8+d2)
+    except:
+        pass
+    try:
+        os.mkdir(b8+d3)
+    except:
+        pass
+    try:
+        os.mkdir(b8+d4)
+    except:
+        pass
+    try:
+        os.mkdir(b9+d2)
+    except:
+        pass
+    try:
+        os.mkdir(b9+d3)
+    except:
+        pass
+    try:
+        os.mkdir(b9+d4)
+    except:
+        pass
+    try:
+        os.mkdir(b10+d2)
+    except:
+        pass
+    try:
+        os.mkdir(b10+d3)
+    except:
+        pass
+    try:
+        os.mkdir(b10+d4)
+    except:
+        pass
+    try:
+        os.mkdir(b11+d2)
+    except:
+        pass
+    try:
+        os.mkdir(b11+d3)
+    except:
+        pass
+    try:
+        os.mkdir(b11+d4)
+    except:
+        pass
+    try:
+        os.mkdir(b12+d2)
+    except:
+        pass
+    try:
+        os.mkdir(b12+d3)
+    except:
+        pass
+    try:
+        os.mkdir(b12+d4)
+    except:
+        pass
     for i in range(0,50):
         try:
             os.mkdir(b2+d2+"\\c"+str(i))
@@ -648,10 +1482,28 @@ def graphallclustersalltypes(sqlfile):
             d=d4
         if opt!=0:
             scatscorevsclustscore(sqlfile,b1+d+"\\csvs",opt,0)
-            catscorevsclustscore(sqlfile,b1+d+"\\csvs",opt,1)
+            scatscorevsclustscore(sqlfile,b1+d+"\\csvs",opt,1)
             makertbar(sqlfile,b5+d+"\\rtubyc",opt,0)
             makertbar(sqlfile,b5+d+"\\rtubyc",opt,1)
             makertbar(sqlfile,b5+d+"\\rtubyc",opt,2)
+            makeatbar(sqlfile,b7+d+"\\atubyc",opt,0)
+            makeatbar(sqlfile,b7+d+"\\atubyc",opt,1)
+            makeatbar(sqlfile,b7+d+"\\atubyc",opt,2)
+            makefollerbar(sqlfile,b8+d+"\\foubyc",opt,0)
+            makefollerbar(sqlfile,b8+d+"\\foubyc",opt,1)
+            makefollerbar(sqlfile,b8+d+"\\foubyc",opt,2)
+            makefollingbar(sqlfile,b9+d+"\\faubyc",opt,0)
+            makefollingbar(sqlfile,b9+d+"\\faubyc",opt,1)
+            makefollingbar(sqlfile,b9+d+"\\faubyc",opt,2)
+            makelistedbar(sqlfile,b10+d+"\\liubyc",opt,0)
+            makelistedbar(sqlfile,b10+d+"\\liubyc",opt,1)
+            makelistedbar(sqlfile,b10+d+"\\liubyc",opt,2)
+            makefavedbar(sqlfile,b11+d+"\\faubyc",opt,0)
+            makefavedbar(sqlfile,b11+d+"\\faubyc",opt,1)
+            makefavedbar(sqlfile,b11+d+"\\faubyc",opt,2)
+            makeurlsbar(sqlfile,b12+d+"\\urlubyc",opt,0)
+            makeurlsbar(sqlfile,b12+d+"\\urlubyc",opt,1)
+            makeurlsbar(sqlfile,b12+d+"\\urlubyc",opt,2)
         for i in range(0,50):
             c=""
             if opt!=0:
