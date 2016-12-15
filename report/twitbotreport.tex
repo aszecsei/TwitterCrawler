@@ -143,7 +143,7 @@ While there have been multiple approaches to bot detection\cite{Stringhini:Detec
 
 \subsection{Proposed Approach}
 % 1.3 Proposed Approach (1 paragraph)
-In this paper, we use data from a bot-detection service run by Indiana University to determine whether or not users are bots. We then pull their latest tweets, as well as user data, and use the collected data in an unsupervised machine learning algorithm to cluster the users into 50 groups. We then take the data for each cluster and analyze common behavioral patterns.
+In this paper, we use data from \emph{BotOrNot}, a bot-detection service run by Indiana University, to determine whether or not users are bots. We then pull their latest tweets, as well as user data, and use the collected data in an unsupervised machine learning algorithm to cluster the users into 50 groups. We then take the data for each cluster and analyze common behavioral patterns.
 
 \subsection{Key Results}
 % 1.4 Key Results (1-2 paragraph)
@@ -175,17 +175,21 @@ To retrieve a list of human and bot Twitter accounts, we compiled an initial lis
 
 \subsection{Clustering}
 
-\emph{BotOrNot} analyzes a large amount of data retrieved from each user, including sentiment analysis and a temporal analysis to determine when users are likely to tweet. Using machine learning classifiers, it assigns a score to a user, with higher scores indicating a larger amount of bot-like behavior.
+To analyze data for a large number of users, we sought to cluster these accounts into a relatively small number of users with similar characteristics. For example, organizational accounts that may have bot-like behavior but provide a valuable service to the social network and are therefore followed by a large number of users should be classified as a different type of bot than a typical spambot. To perform this clustering, we used data from Indiana University's \emph{BotOrNot} service.
 
-To ensure that using \emph{BotOrNot} would provide legitimate analysis of Twitter users, we used a small sample to validate its results. This lead us to discover a number of inconsistencies with \emph{BotOrNot}'s overall score assignments. For example, a known Twitter bot was given a lower score than the personal account that the bot was attempting to imitate. Organizational accounts, such as the one belonging to the President of the United States, were often given a high \emph{BotOrNot} score, which is a limitation that the official \emph{BotOrNot} website discloses. One account was owned by the son of another user, who had only made 3 tweets and had a \emph{BotOrNot} score of over 90\%.
+\emph{BotOrNot} analyzes a large amount of data retrieved from each user, including sentiment analysis and a temporal analysis to determine when users are likely to tweet. These different analyses are separated into six different category subscores: \emph{Friend}, \emph{User}, \emph{Content}, \emph{Temporal}, \emph{Sentiment}, and \emph{Network}\cite{Davis:BotOrNot}. Using machine learning classifiers, it assigns a score to a user, with higher scores indicating a larger amount of bot-like behavior.
 
-After discovering these issues, we determined that more information was required for automated analysis of Twitter accounts. Using unsupervised machine learning to cluster accounts enabled us to successfully organize a large number of accounts into separate categories, which were then manually classified and verified. Following the recommendations of Bessi and Ferrera\cite{Bessi:PresElect}, we retrieved the most important descriptors of bots: whether they're using the default Twitter avatar and header image, their retweet-to-tweet ratio, and others, in addition to the \emph{BotOrNot} score and category scores. However, our best results were found when simply clustering based on the \emph{BotOrNot} category scores.
+\emph{BotOrNot} separates its data into these six categories and performs machine learning classification on each category to determine its subscore. It also analyzes all of its data in a separate process to determine the overall score. Because these are separated, an account's subscores may not agree with its overall score; as an example, an account with all of its category subscores lower than another account may actually have a higher overall \emph{BotOrNot} score.
 
-To classify each cluster, we set up a basic Python script using Selenium that displayed a sample set of Twitter feeds, and allowed a user to submit a category for the user. Based on the categories reported for the cluster, we could determine what type of Twitter account a user was likely to be. We then manually categorized 1,000 of these accounts, split evenly among each cluster, to verify both our clustering and \emph{BotOrNot}.
+To ensure that using \emph{BotOrNot} would provide legitimate analysis of Twitter users, we used a small sample to validate its results. This lead us to discover a number of inconsistencies with \emph{BotOrNot}'s overall score assignments. For example, a known Twitter bot was given a lower score than the personal account that the bot was attempting to imitate. Organizational accounts, such as the one belonging to the President of the United States, were often given a high \emph{BotOrNot} score, which is a limitation that the official \emph{BotOrNot} website discloses. One poorly-categorized account, the son of another user, had only made 3 tweets and had a \emph{BotOrNot} score of over 90\%.
+
+After discovering these issues, we determined that more information was required for automated analysis of Twitter accounts. Using unsupervised machine learning to cluster accounts enabled us to successfully organize a large number of accounts into separate categories, which were then manually classified and verified. Following the recommendations of Bessi and Ferrera\cite{Bessi:PresElect}, we retrieved the most important descriptors of bots: whether they're using the default Twitter avatar and header image, and their retweet-to-tweet ratio, in addition to the \emph{BotOrNot} score and category scores. While the number of retweets a user has is not readily available, it can be determined whether individual tweets on the user's timeline are retweets or original content. By retrieving the latest tweets of a user and calculating how many retweets were present, we can approximate that user's retweet-to-tweet ratio. Our best clustering results, however, were found when simply clustering based on a combination of the overall \emph{BotOrNot} score and category subscores.
+
+To classify each cluster, we set up a basic Python script using Selenium that displayed a sample set of Twitter feeds, and allowed a human classifier to submit a category for that Twitter user. Based on the overall classification associated with the cluster, we could determine what type of Twitter account a user who also belonged to that cluster was likely to be. We manually categorized 1,000 of these accounts, split evenly among each cluster, to verify both our clustering and \emph{BotOrNot}'s overall scoring.
 
 \subsection{Tweet Analysis}
 
-We determined how bots could engage with human users on the Twitter platform, determining that these vectors consisted of:
+We examined the possible ways that bots can engage with human users on the Twitter platform, determining that these vectors consisted primarily of:
 \begin{itemize}
 	\item Mentioning a user in a tweet
 	\item Retweeting a user
@@ -193,7 +197,7 @@ We determined how bots could engage with human users on the Twitter platform, de
 	\item Following a user
 	\item Favoriting another user's tweet
 \end{itemize}
-We collected data about how many accounts each account was following, how many accounts followed them, and how many tweets each account had favorited. This user data let us analyze how many accounts each cluster was following, and helped manually classify certain users as bots.
+We collected data about how many accounts each account was following, how many accounts followed them, and how many tweets each account had favorited. This user data, averaged across a cluster, gave insight into how each cluster of users tended to use the Twitter platform.
 
 In addition to retrieving this user data, we also obtained the latest tweets made by each account, with a total of 625,053 tweets. We could then determine whether the tweet had been retweeted from another user, contained links, mentioned other users, and which hashtags were used.
 
@@ -202,7 +206,7 @@ Using these social behaviors, we were able to determine how each cluster and cat
 \section{Results \& Discussion}
 % RESULTS & DISCUSSIONS (3 pages including tables and figures)
 
-Examining the correctness of \emph{BotOrNot} scoring was the first part of analysis we performed. Manually determining whether a number of accounts were bots, humans, or indeterminate, we found that the majority of accounts with a \emph{BotOrNot} score over 50\% we were unable to determine if the account was automated, or the account was clearly a bot. Likewise, the majority of accounts with a score less than 50\% were clearly human users, as seen in Figure \ref{fig:scorescat}.
+Examining the correctness of \emph{BotOrNot} scoring was the first part of analysis performed. We manually determined whether a number of accounts were bots, humans, or indeterminate. For the majority of accounts with a \emph{BotOrNot} score over 50\%, we were either unable to conclusively determine if the account was automated, or the account was definitely a bot. In addition, accounts with a \emph{BotOrNot} score less than 50\% were almost entirely found to be human users, as seen in Figure \ref{fig:scorescat}.
 
 \begin{figure}[h!]
 	\caption{Manual identification of accounts}
@@ -212,7 +216,7 @@ Examining the correctness of \emph{BotOrNot} scoring was the first part of analy
 	
 \end{figure}
 
-We next examined how \emph{BotOrNot}'s category subscores aligned with its overall account score, confirming that, with some deviations, the \emph{BotOrNot} score provided a better prediction of whether or not a user's account was automated.
+We next examined how an account's overall \emph{BotOrNot} account score aligned with the average of its corresponding category subscores, confirming that, with some deviations, the \emph{BotOrNot} score provided a better prediction of whether or not a user's account was automated.
 
 \begin{figure}[h!]
 	\caption{\emph{BotOrNot} \emph{BotOrNot} Scores vs Category Subscores}
@@ -257,7 +261,7 @@ Similar to automated mentions, Twitter's guidelines explicitly forbid automated 
 
 \begin{quote}Automation of Retweets often leads to spam and other negative user experiences; therefore, Retweeting in a bulk or automated manner is prohibited.\cite{twitter:automation}\end{quote}
 
-Very few users classified as bots mention other users or retweet their tweets, which indicates to us that Twitter is closely monitoring these methods of user interaction; either very few bots are being created to automate these actions or they are rapidly banned from the service.
+Very few users classified as bots mention other users or retweet their tweets, which indicates that Twitter is closely monitoring these methods of user interaction; either very few bots are being created to automate these actions or they are rapidly banned from the service.
 
 \begin{figure}[h!]
 	\caption{RTs Per Cluster}
